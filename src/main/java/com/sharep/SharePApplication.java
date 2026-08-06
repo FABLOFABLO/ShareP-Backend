@@ -1,4 +1,4 @@
-package com.hgs.sharep;
+package com.sharep;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

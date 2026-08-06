@@ -13,5 +13,4 @@ public class PromptRequest {
     private String prompt;
     private List<String> tag;
     private Long author;
-    private String date;
 }
