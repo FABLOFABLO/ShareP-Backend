@@ -24,4 +24,12 @@ public class PromptReadService {
 
         return promptResponse;
     }
+
+    @Transactional(readOnly = true)
+    public PromptResponse execute(Long id) {
+        Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 게시판을 찾을 수 없습니다"));
+
+        return new PromptResponse(prompt);
+    }
+
 }

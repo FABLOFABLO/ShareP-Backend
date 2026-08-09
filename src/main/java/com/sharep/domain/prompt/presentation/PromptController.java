@@ -1,9 +1,9 @@
 package com.sharep.domain.prompt.presentation;
 
-import com.sharep.domain.prompt.domain.Prompt;
 import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
 import com.sharep.domain.prompt.presentation.dto.response.PromptResponse;
 import com.sharep.domain.prompt.service.PromptCreateService;
+import com.sharep.domain.prompt.service.PromptDeleteService;
 import com.sharep.domain.prompt.service.PromptReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,16 +17,29 @@ import java.util.List;
 public class PromptController {
     private final PromptCreateService promptCreateService;
     private final PromptReadService promptReadService;
+    private final PromptDeleteService promptDeleteService;
 
-    @PostMapping("")
+    @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     public void promptCreate(@RequestBody PromptRequest promptRequest) {
         promptCreateService.execute(promptRequest);
     }
 
-    @GetMapping("")
+    @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
     public List<PromptResponse> promptRead() {
         return promptReadService.execute();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public PromptResponse promptRead(@PathVariable Long id) {
+        return promptReadService.execute(id);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void promptDelete(@PathVariable Long id) {
+        promptDeleteService.execute(id);
     }
 }
