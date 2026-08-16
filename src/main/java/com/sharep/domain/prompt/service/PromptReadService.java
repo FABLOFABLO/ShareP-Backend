@@ -19,8 +19,37 @@ public class PromptReadService {
         List<Prompt> prompt = promptRepository.findAll();
 
         List<PromptResponse> promptResponse = prompt.stream()
+                .sorted((l1, l2) -> l2.getId().compareTo(l1.getId()))
                 .map(PromptResponse::new)
                 .toList();
+
+        return promptResponse;
+    }
+
+    @Transactional(readOnly = true)
+    public List<PromptResponse> execute(String sortBy) {
+        List<Prompt> prompt = promptRepository.findAll();
+
+        List<PromptResponse> promptResponse = prompt.stream()
+                .sorted((l1, l2) -> l2.getId().compareTo(l1.getId()))
+                .map(PromptResponse::new)
+                .toList();
+        
+        if (sortBy != null) {
+            if (sortBy.equals("latest")) {
+                promptResponse = prompt.stream()
+                        .sorted((l1, l2) -> l2.getId().compareTo(l1.getId()))
+                        .map(PromptResponse::new)
+                        .toList();
+            }
+
+            if (sortBy.equals("popularity")) {
+                promptResponse = prompt.stream()
+                        .sorted((l1, l2) -> l2.getLikeCount().compareTo(l1.getLikeCount()))
+                        .map(PromptResponse::new)
+                        .toList();
+            }
+        }
 
         return promptResponse;
     }

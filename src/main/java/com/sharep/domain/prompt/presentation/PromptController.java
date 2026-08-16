@@ -27,8 +27,8 @@ public class PromptController {
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
-    public List<PromptResponse> promptRead() {
-        return promptReadService.execute();
+    public List<PromptResponse> promptRead(@RequestParam(value = "sort_by", required = false) String sortBy) {
+        return promptReadService.execute(sortBy);
     }
 
     @GetMapping("/{id}")
