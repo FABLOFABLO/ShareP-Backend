@@ -13,7 +13,7 @@ public class PromptDeleteService {
 
     @Transactional
     public void execute(Long id) {
-        Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 게시글을 찾을 수 없습니다."));
+        Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 프롬프트 게시글을 찾을 수 없습니다."));
         promptRepository.delete(prompt);
     }
 }

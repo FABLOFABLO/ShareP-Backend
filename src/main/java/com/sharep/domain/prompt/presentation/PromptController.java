@@ -18,6 +18,10 @@ public class PromptController {
     private final PromptCreateService promptCreateService;
     private final PromptReadService promptReadService;
     private final PromptDeleteService promptDeleteService;
+    public enum SortBy {
+        latest,
+        popularity
+    }
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
@@ -27,8 +31,8 @@ public class PromptController {
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
-    public List<PromptResponse> promptRead(@RequestParam(value = "sort_by", required = false) String sortBy) {
-        return promptReadService.execute(sortBy);
+    public List<PromptResponse> promptRead(@RequestParam(value = "sort_by", required = false) SortBy sortBy) {
+        return promptReadService.execute(sortBy == null ?  SortBy.latest : sortBy);
     }
 
     @GetMapping("/{id}")
@@ -38,7 +42,7 @@ public class PromptController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void promptDelete(@PathVariable Long id) {
         promptDeleteService.execute(id);
     }
