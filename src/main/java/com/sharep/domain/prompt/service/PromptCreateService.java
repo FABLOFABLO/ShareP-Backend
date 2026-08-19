@@ -22,7 +22,7 @@ public class PromptCreateService {
                 .prompt(promptRequest.getPrompt())
                 .tag(promptRequest.getTag())
                 .author(promptRequest.getAuthor())
-                .date(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
                 .build();
 
         promptRepository.save(prompt);

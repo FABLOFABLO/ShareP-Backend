@@ -17,20 +17,21 @@ public class PromptReadService {
 
     @Transactional(readOnly = true)
     public List<PromptResponse> execute(PromptController.SortBy sortBy) {
-        List<Prompt> prompt = promptRepository.findAll();
-
+        List<Prompt> prompt;
         List<PromptResponse> promptResponse;
 
         switch(sortBy) {
-            case popularity: promptResponse = prompt.stream()
-                        .sorted((l1, l2) -> l2.getLikeCount().compareTo(l1.getLikeCount()))
+            case popularity:
+                prompt = promptRepository.findAllByOrderByLikeCountDesc();
+                promptResponse = prompt.stream()
                         .map(PromptResponse::new)
                         .toList();
                 break;
-            default: promptResponse = prompt.stream()
-                    .sorted((l1, l2) -> l2.getDate().compareTo(l1.getDate()))
-                    .map(PromptResponse::new)
-                    .toList();
+                default:
+                    prompt = promptRepository.findAllByOrderByCreateAtDesc();
+                    promptResponse = prompt.stream()
+                            .map(PromptResponse::new)
+                            .toList();
                 break;
         }
 

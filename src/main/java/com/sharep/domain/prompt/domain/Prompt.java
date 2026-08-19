@@ -29,16 +29,16 @@ public class Prompt {
     @Column(name = "like_count")
     private Long likeCount;
 
-    private LocalDateTime date;
+    private LocalDateTime createAt;
 
     @Builder
-    public Prompt(String title, String description, String prompt, List<String> tag, Long author, LocalDateTime date) {
+    public Prompt(String title, String description, String prompt, List<String> tag, Long author, LocalDateTime createAt) {
         this.title = title;
         this.description = description;
         this.prompt = prompt;
         this.tag = tag;
         this.author = author;
         this.likeCount = 0L;
-        this.date = date;
+        this.createAt = createAt;
     }
 }
