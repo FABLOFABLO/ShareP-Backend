@@ -23,13 +23,13 @@ public class PromptController {
         popularity
     }
 
-    @PostMapping("/")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void promptCreate(@RequestBody PromptRequest promptRequest) {
         promptCreateService.execute(promptRequest);
     }
 
-    @GetMapping("/")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<PromptResponse> promptRead(@RequestParam(value = "sort_by", required = false) SortBy sortBy) {
         return promptReadService.execute(sortBy == null ?  SortBy.latest : sortBy);

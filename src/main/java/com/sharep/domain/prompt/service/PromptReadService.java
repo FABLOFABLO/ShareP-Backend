@@ -4,6 +4,8 @@ import com.sharep.domain.prompt.domain.Prompt;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
 import com.sharep.domain.prompt.presentation.PromptController;
 import com.sharep.domain.prompt.presentation.dto.response.PromptResponse;
+import com.sharep.global.error.exception.CustomException;
+import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +42,7 @@ public class PromptReadService {
 
     @Transactional(readOnly = true)
     public PromptResponse execute(Long id) {
-        Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 프롬프트 게시판을 찾을 수 없습니다"));
+        Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
 
         return new PromptResponse(prompt);
     }

@@ -2,6 +2,8 @@ package com.sharep.domain.prompt.service;
 
 import com.sharep.domain.prompt.domain.Prompt;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
+import com.sharep.global.error.exception.CustomException;
+import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +15,7 @@ public class PromptDeleteService {
 
     @Transactional
     public void execute(Long id) {
-        Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new RuntimeException("해당 프롬프트 게시글을 찾을 수 없습니다."));
+        Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
         promptRepository.delete(prompt);
     }
 }
