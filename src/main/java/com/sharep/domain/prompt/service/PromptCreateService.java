@@ -6,7 +6,6 @@ import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 
 @Service
@@ -22,7 +21,7 @@ public class PromptCreateService {
                 .prompt(promptRequest.getPrompt())
                 .tag(promptRequest.getTag())
                 .author(promptRequest.getAuthor())
-                .date(LocalDateTime.now())
+                .createAt(LocalDateTime.now())
                 .build();
 
         promptRepository.save(prompt);

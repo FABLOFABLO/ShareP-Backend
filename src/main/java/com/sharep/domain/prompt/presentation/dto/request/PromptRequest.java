@@ -2,7 +2,6 @@ package com.sharep.domain.prompt.presentation.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @Getter

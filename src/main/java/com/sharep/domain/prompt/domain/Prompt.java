@@ -2,17 +2,13 @@ package com.sharep.domain.prompt.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
 @Table(name = "tbl_prompt")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Prompt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,16 +27,16 @@ public class Prompt {
     @Column(name = "like_count")
     private Long likeCount;
 
-    private LocalDateTime date;
+    private LocalDateTime createAt;
 
     @Builder
-    public Prompt(String title, String description, String prompt, List<String> tag, Long author, LocalDateTime date) {
+    public Prompt(String title, String description, String prompt, List<String> tag, Long author, LocalDateTime createAt) {
         this.title = title;
         this.description = description;
         this.prompt = prompt;
         this.tag = tag;
         this.author = author;
         this.likeCount = 0L;
-        this.date = date;
+        this.createAt = createAt;
     }
 }

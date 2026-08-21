@@ -2,7 +2,6 @@ package com.sharep.domain.prompt.presentation.dto.response;
 
 import com.sharep.domain.prompt.domain.Prompt;
 import lombok.Getter;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +14,9 @@ public class PromptResponse {
     private final List<String> tag;
     private final Long author;
     private final Long likeCount;
-    private final LocalDateTime date;
+    private final LocalDateTime createAt;
+    private final LocalDateTime nowTime;
+
     public PromptResponse(Prompt prompt) {
         this.id = prompt.getId();
         this.title = prompt.getTitle();
@@ -24,6 +25,7 @@ public class PromptResponse {
         this.tag = prompt.getTag();
         this.author = prompt.getAuthor();
         this.likeCount = prompt.getLikeCount();
-        this.date = prompt.getDate();
+        this.createAt = prompt.getCreateAt();
+        this.nowTime = LocalDateTime.now();
     }
 }

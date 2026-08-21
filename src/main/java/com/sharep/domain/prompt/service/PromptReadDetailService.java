@@ -3,25 +3,21 @@ package com.sharep.domain.prompt.service;
 import com.sharep.domain.prompt.domain.Prompt;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
 import com.sharep.domain.prompt.presentation.dto.response.PromptResponse;
+import com.sharep.global.error.exception.CustomException;
+import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
-public class PromptReadService {
+public class PromptReadDetailService {
     private final PromptRepository promptRepository;
 
     @Transactional(readOnly = true)
-    public List<PromptResponse> execute() {
-        List<Prompt> prompt = promptRepository.findAll();
+    public PromptResponse execute(Long id) {
+        Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
 
-        List<PromptResponse> promptResponse = prompt.stream()
-                .map(PromptResponse::new)
-                .toList();
-
-        return promptResponse;
+        return new PromptResponse(prompt);
     }
 }
