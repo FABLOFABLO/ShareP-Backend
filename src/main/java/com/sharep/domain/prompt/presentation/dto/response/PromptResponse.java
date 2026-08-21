@@ -16,6 +16,7 @@ public class PromptResponse {
     private final Long likeCount;
     private final LocalDateTime createAt;
     private final LocalDateTime nowTime;
+
     public PromptResponse(Prompt prompt) {
         this.id = prompt.getId();
         this.title = prompt.getTitle();
