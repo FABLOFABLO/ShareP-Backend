@@ -2,7 +2,6 @@ package com.sharep.domain.prompt.presentation.dto.response;
 
 import com.sharep.domain.prompt.domain.Prompt;
 import lombok.Getter;
-
 import java.time.LocalDateTime;
 import java.util.List;
 

@@ -2,7 +2,6 @@ package com.sharep.domain.prompt.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import java.util.List;
 @Getter
 @Table(name = "tbl_prompt")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Prompt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

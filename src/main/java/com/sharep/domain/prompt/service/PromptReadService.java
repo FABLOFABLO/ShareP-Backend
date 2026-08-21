@@ -9,7 +9,6 @@ import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -41,7 +40,7 @@ public class PromptReadService {
     }
 
     @Transactional(readOnly = true)
-    public PromptResponse execute(Long id) {
+    public PromptResponse detail(Long id) {
         Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
 
         return new PromptResponse(prompt);

@@ -8,7 +8,6 @@ import com.sharep.domain.prompt.service.PromptReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -32,13 +31,13 @@ public class PromptController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<PromptResponse> promptRead(@RequestParam(value = "sort_by", required = false) SortBy sortBy) {
-        return promptReadService.execute(sortBy == null ?  SortBy.latest : sortBy);
+        return promptReadService.execute(sortBy == null ? SortBy.latest : sortBy);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public PromptResponse promptRead(@PathVariable Long id) {
-        return promptReadService.execute(id);
+        return promptReadService.detail(id);
     }
 
     @DeleteMapping("/{id}")
