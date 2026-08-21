@@ -1,7 +1,7 @@
 package com.sharep.domain.prompt.service;
 
 import com.sharep.domain.prompt.domain.Prompt;
-import com.sharep.domain.prompt.domain.SortBy;
+import com.sharep.domain.prompt.presentation.dto.request.SortBy;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
 import com.sharep.domain.prompt.presentation.dto.response.PromptResponse;
 import lombok.RequiredArgsConstructor;

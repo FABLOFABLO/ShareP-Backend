@@ -1,6 +1,6 @@
 package com.sharep.domain.prompt.presentation;
 
-import com.sharep.domain.prompt.domain.SortBy;
+import com.sharep.domain.prompt.presentation.dto.request.SortBy;
 import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
 import com.sharep.domain.prompt.presentation.dto.response.PromptResponse;
 import com.sharep.domain.prompt.service.PromptCreateService;
@@ -30,7 +30,7 @@ public class PromptController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<PromptResponse> promptReadAll(@RequestParam(value = "sort_by", required = false) SortBy sortBy) {
-        return promptReadAllService.execute(sortBy == null ? SortBy.LATEST : sortBy);
+        return promptReadAllService.execute(sortBy);
     }
 
     @GetMapping("/{id}")
