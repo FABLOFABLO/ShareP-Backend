@@ -2,7 +2,8 @@ package com.sharep.domain.prompt.presentation;
 
 import com.sharep.domain.prompt.presentation.dto.request.SortBy;
 import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
-import com.sharep.domain.prompt.presentation.dto.response.PromptResponse;
+import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
+import com.sharep.domain.prompt.presentation.dto.response.PromptDetailResponse;
 import com.sharep.domain.prompt.service.PromptCreateService;
 import com.sharep.domain.prompt.service.PromptDeleteService;
 import com.sharep.domain.prompt.service.PromptReadDetailService;
@@ -29,13 +30,13 @@ public class PromptController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PromptResponse> promptReadAll(@RequestParam(value = "sort_by", required = false) SortBy sortBy) {
+    public List<PromptAllResponse> promptReadAll(@RequestParam(value = "sort_by", required = false) SortBy sortBy) {
         return promptReadAllService.execute(sortBy);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PromptResponse promptReadDetail(@PathVariable Long id) {
+    public PromptDetailResponse promptReadDetail(@PathVariable Long id) {
         return promptReadDetailService.execute(id);
     }
 

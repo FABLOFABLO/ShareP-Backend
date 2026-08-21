@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-public class PromptResponse {
+public class PromptDetailResponse {
     private final Long id;
     private final String title;
     private final String description;
@@ -17,7 +17,7 @@ public class PromptResponse {
     private final LocalDateTime createAt;
     private final LocalDateTime nowTime;
 
-    public PromptResponse(Prompt prompt) {
+    public PromptDetailResponse(Prompt prompt) {
         this.id = prompt.getId();
         this.title = prompt.getTitle();
         this.description = prompt.getDescription();
