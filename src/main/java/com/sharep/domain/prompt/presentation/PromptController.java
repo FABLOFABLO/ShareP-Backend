@@ -1,13 +1,11 @@
 package com.sharep.domain.prompt.presentation;
 
+import com.sharep.domain.prompt.presentation.dto.request.Filter;
 import com.sharep.domain.prompt.presentation.dto.request.SortBy;
 import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
 import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
 import com.sharep.domain.prompt.presentation.dto.response.PromptDetailResponse;
-import com.sharep.domain.prompt.service.PromptCreateService;
-import com.sharep.domain.prompt.service.PromptDeleteService;
-import com.sharep.domain.prompt.service.PromptReadDetailService;
-import com.sharep.domain.prompt.service.PromptReadAllService;
+import com.sharep.domain.prompt.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +19,7 @@ public class PromptController {
     private final PromptReadAllService promptReadAllService;
     private final PromptReadDetailService promptReadDetailService;
     private final PromptDeleteService promptDeleteService;
+    private final PromptSearchService promptSearchService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -30,7 +29,7 @@ public class PromptController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PromptAllResponse> promptReadAll(@RequestParam(value = "sort_by", required = false) SortBy sortBy) {
+    public List<PromptAllResponse> promptReadAll(@RequestParam(value = "sort_by", required = false, defaultValue = "LATEST") SortBy sortBy) {
         return promptReadAllService.execute(sortBy);
     }
 
@@ -44,5 +43,14 @@ public class PromptController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void promptDelete(@PathVariable Long id) {
         promptDeleteService.execute(id);
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PromptAllResponse> promptSearch(
+            @RequestParam(value = "search", required = false) String value,
+            @RequestParam(value = "filter", defaultValue = "title") Filter filter
+            ) {
+        return promptSearchService.execute(value, filter);
     }
 }

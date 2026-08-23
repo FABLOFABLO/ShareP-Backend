@@ -3,7 +3,6 @@ package com.sharep.domain.prompt.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter
@@ -24,8 +23,8 @@ public class Prompt {
     @Column(name = "prompt", nullable = false, length =  6000)
     private String prompt;
 
-    @Column(name = "tag")
-    private List<String> tag;
+    @Column(name = "tag", nullable = false, length = 30)
+    private String tag;
 
     @Column(name = "user_id", nullable = false)
     private Long author;
@@ -37,7 +36,7 @@ public class Prompt {
     private LocalDateTime createAt;
 
     @Builder
-    private Prompt(String title, String description, String prompt, List<String> tag, Long author, LocalDateTime createAt) {
+    private Prompt(String title, String description, String prompt, String tag, Long author, LocalDateTime createAt) {
         this.title = title;
         this.description = description;
         this.prompt = prompt;

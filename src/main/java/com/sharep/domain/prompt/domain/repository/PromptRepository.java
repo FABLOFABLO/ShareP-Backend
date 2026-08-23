@@ -7,4 +7,7 @@ import java.util.List;
 public interface PromptRepository extends JpaRepository<Prompt, Long> {
     List<Prompt> findAllByOrderByCreateAtDesc();
     List<Prompt> findAllByOrderByLikeCountDesc();
+    List<Prompt> findByTitleContainsOrderByCreateAtDesc(String title);
+    List<Prompt> findByTagContainsOrderByCreateAtDesc(String tag);
+    List<Prompt> findByDescriptionContainsOrderByCreateAtDesc(String description);
 }

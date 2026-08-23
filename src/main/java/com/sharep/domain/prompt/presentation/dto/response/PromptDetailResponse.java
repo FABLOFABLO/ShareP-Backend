@@ -3,7 +3,6 @@ package com.sharep.domain.prompt.presentation.dto.response;
 import com.sharep.domain.prompt.domain.Prompt;
 import lombok.Getter;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 public class PromptDetailResponse {
@@ -11,7 +10,7 @@ public class PromptDetailResponse {
     private final String title;
     private final String description;
     private final String prompt;
-    private final List<String> tag;
+    private final String tag;
     private final Long author;
     private final Long likeCount;
     private final LocalDateTime createAt;
