@@ -6,6 +6,7 @@ import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
 import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
 import com.sharep.domain.prompt.presentation.dto.response.PromptDetailResponse;
 import com.sharep.domain.prompt.service.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class PromptController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void promptCreate(@RequestBody PromptRequest promptRequest) {
+    public void promptCreate(@Valid @RequestBody PromptRequest promptRequest) {
         promptCreateService.execute(promptRequest);
     }
 
@@ -48,8 +49,8 @@ public class PromptController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<PromptAllResponse> promptSearch(
-            @RequestParam(value = "search", required = false) String value,
-            @RequestParam(value = "filter", defaultValue = "title") Filter filter
+            @RequestParam(value = "search", defaultValue = "") String value,
+            @RequestParam(value = "filter", defaultValue = "TITLE") Filter filter
             ) {
         return promptSearchService.execute(value, filter);
     }
