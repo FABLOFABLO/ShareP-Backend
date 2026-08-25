@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class PromptAllResponse {
     private final Long id;
     private final String title;
-    private final String prompt;
+    private final String description;
     private final String tag;
     private final Long author;
     private final Long likeCount;
@@ -17,8 +17,16 @@ public class PromptAllResponse {
 
     public PromptAllResponse(Prompt prompt) {
         this.id = prompt.getId();
-        this.title = prompt.getTitle();
-        this.prompt = prompt.getPrompt();
+        if (prompt.getTitle().length() >= 20) {
+            this.title = prompt.getTitle().substring(0, 20) + "...";
+        } else {
+            this.title = prompt.getTitle();
+        }
+        if (prompt.getDescription().length() >= 100) {
+            this.description = prompt.getDescription().substring(0, 100) + "...";
+        } else {
+            this.description = prompt.getDescription();
+        }
         this.tag = prompt.getTag();
         this.author = prompt.getAuthor();
         this.likeCount = prompt.getLikeCount();
