@@ -17,7 +17,7 @@ public class PromptCreateService {
     public void execute(PromptRequest promptRequest) {
         Prompt prompt = Prompt.builder()
                 .title(promptRequest.getTitle())
-                .description(promptRequest.getDescription())
+                .description(promptRequest.getDescription() != null ? promptRequest.getDescription() : "")
                 .prompt(promptRequest.getPrompt())
                 .tag(promptRequest.getTag())
                 .author(promptRequest.getAuthor())

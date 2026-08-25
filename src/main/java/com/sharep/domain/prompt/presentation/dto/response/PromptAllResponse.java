@@ -17,12 +17,12 @@ public class PromptAllResponse {
 
     public PromptAllResponse(Prompt prompt) {
         this.id = prompt.getId();
-        if (prompt.getTitle().length() >= 20) {
+        if (prompt.getTitle().length() > 20) {
             this.title = prompt.getTitle().substring(0, 20) + "...";
         } else {
             this.title = prompt.getTitle();
         }
-        if (prompt.getDescription().length() >= 100) {
+        if (prompt.getDescription().length() > 100) {
             this.description = prompt.getDescription().substring(0, 100) + "...";
         } else {
             this.description = prompt.getDescription();

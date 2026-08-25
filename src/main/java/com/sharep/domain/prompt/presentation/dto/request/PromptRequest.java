@@ -14,7 +14,7 @@ public class PromptRequest {
     private String title;
 
     @Size(max = 900)
-    private String description = "";
+    private String description;
 
     @NotBlank
     @Size(min = 1, max = 6000)
