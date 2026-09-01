@@ -1,12 +1,12 @@
 package com.sharep.domain.prompt.presentation;
 
+import com.sharep.domain.prompt.presentation.dto.request.Filter;
 import com.sharep.domain.prompt.presentation.dto.request.SortBy;
 import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
-import com.sharep.domain.prompt.presentation.dto.response.PromptResponse;
-import com.sharep.domain.prompt.service.PromptCreateService;
-import com.sharep.domain.prompt.service.PromptDeleteService;
-import com.sharep.domain.prompt.service.PromptReadDetailService;
-import com.sharep.domain.prompt.service.PromptReadAllService;
+import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
+import com.sharep.domain.prompt.presentation.dto.response.PromptDetailResponse;
+import com.sharep.domain.prompt.service.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,22 +20,23 @@ public class PromptController {
     private final PromptReadAllService promptReadAllService;
     private final PromptReadDetailService promptReadDetailService;
     private final PromptDeleteService promptDeleteService;
+    private final PromptSearchService promptSearchService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void promptCreate(@RequestBody PromptRequest promptRequest) {
+    public void promptCreate(@Valid @RequestBody PromptRequest promptRequest) {
         promptCreateService.execute(promptRequest);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PromptResponse> promptReadAll(@RequestParam(value = "sort_by", required = false) SortBy sortBy) {
+    public List<PromptAllResponse> promptReadAll(@RequestParam(value = "sort_by", required = false, defaultValue = "LATEST") SortBy sortBy) {
         return promptReadAllService.execute(sortBy);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PromptResponse promptReadDetail(@PathVariable Long id) {
+    public PromptDetailResponse promptReadDetail(@PathVariable Long id) {
         return promptReadDetailService.execute(id);
     }
 
@@ -43,5 +44,14 @@ public class PromptController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void promptDelete(@PathVariable Long id) {
         promptDeleteService.execute(id);
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PromptAllResponse> promptSearch(
+            @RequestParam(value = "search", defaultValue = "") String value,
+            @RequestParam(value = "filter", defaultValue = "TITLE") Filter filter
+            ) {
+        return promptSearchService.execute(value, filter);
     }
 }
