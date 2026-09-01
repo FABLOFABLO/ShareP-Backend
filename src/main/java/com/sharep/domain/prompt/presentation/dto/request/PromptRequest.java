@@ -10,18 +10,18 @@ import lombok.NoArgsConstructor;
 public class PromptRequest {
 
     @NotBlank
-    @Size(min = 1, max = 90)
+    @Size(max = 90)
     private String title;
 
     @Size(max = 900)
     private String description;
 
     @NotBlank
-    @Size(min = 1, max = 6000)
+    @Size(max = 6000)
     private String prompt;
 
     @NotBlank
-    @Size(min = 1, max = 30)
+    @Size(max = 30)
     private String tag;
 
     private Long author;

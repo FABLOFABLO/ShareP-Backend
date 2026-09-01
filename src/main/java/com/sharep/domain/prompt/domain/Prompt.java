@@ -5,8 +5,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
 @Table(name = "tbl_prompt")
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Prompt {
     @Id
