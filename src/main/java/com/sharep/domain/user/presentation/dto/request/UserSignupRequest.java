@@ -14,7 +14,7 @@ public class UserSignupRequest {
     @Size(max = 30, message = "아이디는 30자 이하로 입력해주세요.")
     @Pattern(
             regexp = "^(?=(?:.*[A-Za-z]){5})(?!(?:.*[A-Za-z]){21})(?!(?:.*[0-9]){11})[A-Za-z0-9]{5,30}$",
-            message = "아이디는 영문 5~20자, 숫자 0~10자만 사용할 수 있습니다."
+            message = "아이디는 영문 5~20자, 숫자 0~10자만 사용할 수 있습니다.특수문자는 사용할 수 없습니다."
     )
     private String loginId;
 
