@@ -6,9 +6,11 @@ import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
 import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
 import com.sharep.domain.prompt.presentation.dto.response.PromptDetailResponse;
 import com.sharep.domain.prompt.service.*;
+import com.sharep.global.auth.AuthDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -24,8 +26,9 @@ public class PromptController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void promptCreate(@Valid @RequestBody PromptRequest promptRequest) {
-        promptCreateService.execute(promptRequest);
+    public void promptCreate(@Valid @RequestBody PromptRequest promptRequest,
+                             @AuthenticationPrincipal AuthDetails currentUser) {
+        promptCreateService.execute(promptRequest, currentUser.getUser().getId());
     }
 
     @GetMapping
@@ -42,8 +45,9 @@ public class PromptController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void promptDelete(@PathVariable Long id) {
-        promptDeleteService.execute(id);
+    public void promptDelete(@PathVariable Long id,
+                             @AuthenticationPrincipal AuthDetails currentUser) {
+        promptDeleteService.execute(id, currentUser.getUser().getId());
     }
 
     @GetMapping("/search")
