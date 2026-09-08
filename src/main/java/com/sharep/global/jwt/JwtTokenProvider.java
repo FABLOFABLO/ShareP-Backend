@@ -1,18 +1,27 @@
 package com.sharep.global.jwt;
 
-
+import com.sharep.global.auth.AuthDetailsService;
+import com.sharep.global.refresh.RefreshToken;
+import com.sharep.global.refresh.RefreshTokenRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.ser.impl.UnknownSerializer;
 
 import javax.crypto.SecretKey;
+import java.time.Instant;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -26,79 +35,82 @@ public class JwtTokenProvider {
 
     @PostConstruct
     public void init() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtProperty.getSecretKey());
-        this.key = keys.hmacShaKeyFor(keyBytes);
+        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperty.getSecretKey()));
     }
 
-    public String generateAccessToken(String accountId) {
-        return generateToken(accountId, "access", jwtProperty.getAccessExp());
+    public String generateAccessToken(String loginId) {
+        return generateToken(loginId, "access", jwtProperty.getAccessExp());
     }
 
-    public String generateRefreshToken(String accountId) {
-        String refreshToken =
-                generateToken(accountId, "refresh", jwtProperty.getRefreshExp());
-
+    public String generateRefreshToken(String loginId) {
+        String token = generateToken(loginId, "refresh", jwtProperty.getRefreshExp());
         refreshTokenRepository.save(
                 RefreshToken.builder()
-                        .accountId(accountId)
-                        .token(refreshToken)
-                        .ttl(jwtProperty.getRefreshExp())
+                        .accountId(loginId)
+                        .token(token)
+                        .ttl(TimeUnit.MILLISECONDS.toSeconds(jwtProperty.getRefreshExp()))
                         .build()
         );
-
-        return refreshToken;
+        return token;
     }
 
-    private String generateToken(String subject, String type, Long exp) {
+    private String generateToken(String subject, String type, long expirationMillis) {
+        Instant now = Instant.now();
         return Jwts.builder()
-                .setSubject(subject)
-                .setHeaderParam("type", type)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + exp))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .header().add("type", type).and()
+                .subject(subject)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusMillis(expirationMillis)))
+                .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String bearer = request.getHeader(jwtProperty.getHeader());
-
-        if (bearer != null && bearer.startsWith(jwtProperty.getPrefix())) {
-            return bearer.substring(7);
+        String header = request.getHeader(jwtProperty.getHeader());
+        if (header == null) {
+            return null;
         }
-        return null;
+
+        String prefix = jwtProperty.getPrefix().stripTrailing() + " ";
+        if (!header.regionMatches(true, 0, prefix, 0, prefix.length())) {
+            throw new BadCredentialsException("Invalid authorization header");
+        }
+
+        String token = header.substring(prefix.length());
+        if (token.isBlank()) {
+            throw new BadCredentialsException("Empty bearer token");
+        }
+        return token;
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails =
-                authDetailsService.loadUserByUsername(getSubject(token));
+        Claims claims = parseAccessClaims(token);
+        UserDetails user = authDetailsService.loadUserByUsername(claims.getSubject());
 
-        return new UsernamePasswordAuthenticationToken(
-                userDetails,
-                "",
-                userDetails.getAuthorities()
-        );
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            parseClaims(token);
-            return true;
-        } catch (ExpiredJwtException e) {
-            throw new BadCredentialsException("Expired JWT token");
-        } catch (Exception e) {
-            throw new BadCredentialsException("Invalid JWT token");
+        if (!user.isEnabled() || !user.isAccountNonLocked()
+                || !user.isAccountNonExpired() || !user.isCredentialsNonExpired()) {
+            throw new BadCredentialsException("Account unavailable");
         }
+
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
 
-    private String getSubject(String token) {
-        return parseClaims(token).getSubject();
-    }
+    private Claims parseAccessClaims(String token) {
+        try {
+            Jws<Claims> jwt = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token);
+            Claims claims = jwt.getPayload();
 
-    private Claims parseClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+            if (!"access".equals(jwt.getHeader().get("type"))
+                    || claims.getSubject() == null || claims.getSubject().isBlank()
+                    || claims.getExpiration() == null) {
+                throw new BadCredentialsException("Invalid access token");
+            }
+            return claims;
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new BadCredentialsException("Invalid or expired JWT token", e);
+        }
     }
 }

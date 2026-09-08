@@ -1,5 +1,6 @@
 package com.sharep.domain.prompt.presentation.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@JsonIgnoreProperties("author")
 public class PromptRequest {
 
     @NotBlank
@@ -24,5 +26,4 @@ public class PromptRequest {
     @Size(max = 30)
     private String tag;
 
-    private Long author;
 }

@@ -17,9 +17,9 @@ public class UserSignupService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void execute(UserSignupRequest request) {
+    public void signUp(UserSignupRequest request) {
         if(userRepository.existsByLoginId(request.getLoginId())) {
-            throw new CustomException(ErrorCode.SIGNUP_NOT_FOUND);
+            throw new CustomException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
         User user = User.builder()

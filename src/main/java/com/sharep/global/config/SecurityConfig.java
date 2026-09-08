@@ -1,12 +1,15 @@
 package com.sharep.global.config;
 
-import com.sharep.domain.user.domain.User;
+import com.sharep.global.error.SecurityExceptionHandler;
+import com.sharep.global.jwt.JwtTokenFilter;
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtTokenFilter jwtTokenFilter;
+    private final SecurityExceptionHandler securityExceptionHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -26,20 +31,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(scrf -> scrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(errors -> errors
+                        .authenticationEntryPoint(securityExceptionHandler)
+                        .accessDeniedHandler(securityExceptionHandler))
                 .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/signup").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/{prompt-id}").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/?sort_by=latest").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/?sort_by=popularity").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/?search=값").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/filter").authenticated()
-
-
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+                        .requestMatchers("/prompt", "/prompt/**").authenticated()
+                        .anyRequest().denyAll()
                 )
                 .addFilterBefore(
                         jwtTokenFilter,

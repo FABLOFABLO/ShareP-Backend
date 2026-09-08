@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Getter
@@ -17,12 +18,13 @@ public class User {
     private Long id;
 
     @Column(name = "login_id", nullable = false, unique = true)
+    @Length(min = 5, max = 30)
     private String loginId;
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 255)
     private String password;
 
     @Builder
@@ -31,4 +33,5 @@ public class User {
         this.password = password;
         this.nickname = "프롬프트 마스터";
     }
+
 }
