@@ -45,4 +45,12 @@ public class Prompt {
         this.likeCount = 0L;
         this.createAt = createAt;
     }
+
+    public void LikeAdd() {
+        this.likeCount++;
+    }
+
+    public void LikeDelete() {
+        this.likeCount--;
+    }
 }
