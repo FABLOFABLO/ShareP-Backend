@@ -1,6 +1,7 @@
 package com.sharep.domain.prompt.presentation;
 
 import com.sharep.domain.prompt.presentation.dto.request.Filter;
+import com.sharep.domain.prompt.presentation.dto.request.PromptLikeRequest;
 import com.sharep.domain.prompt.presentation.dto.request.SortBy;
 import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
 import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
@@ -21,7 +22,8 @@ public class PromptController {
     private final PromptReadDetailService promptReadDetailService;
     private final PromptDeleteService promptDeleteService;
     private final PromptSearchService promptSearchService;
-
+    private final PromptLikeService promptLikeService;
+    private final PromptUnLikeService promptUnLikeService;
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void promptCreate(@Valid @RequestBody PromptRequest promptRequest) {
@@ -53,5 +55,17 @@ public class PromptController {
             @RequestParam(value = "filter", defaultValue = "TITLE") Filter filter
             ) {
         return promptSearchService.execute(value, filter);
+    }
+
+    @PostMapping("/like")
+    @ResponseStatus(HttpStatus.OK)
+    public void promptLike(@RequestBody PromptLikeRequest promptLikeRequest) {
+        promptLikeService.execute(promptLikeRequest);
+    }
+
+    @PostMapping("/unlike")
+    @ResponseStatus(HttpStatus.OK)
+    public void promptUnLike(@RequestBody PromptLikeRequest promptLikeRequest) {
+        promptUnLikeService.execute(promptLikeRequest);
     }
 }
