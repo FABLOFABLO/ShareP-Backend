@@ -1,0 +1,38 @@
+package com.sharep.domain.user.service;
+
+import com.sharep.domain.user.domain.Follow;
+import com.sharep.domain.user.domain.User;
+import com.sharep.domain.user.domain.repository.FollowRepository;
+import com.sharep.domain.user.domain.repository.UserRepository;
+import com.sharep.domain.user.presentation.dto.request.FollowRequest;
+import com.sharep.global.error.exception.CustomException;
+import com.sharep.global.error.exception.ErrorCode;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class FollowService {
+    private final FollowRepository followRepository;
+    private final UserRepository userRepository;
+
+    @Transactional
+    public void execute(FollowRequest followRequest) {
+        User follower = userRepository.findById(followRequest.getFollowerId())
+                .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
+        User following = userRepository.findById(followRequest.getFollowingId())
+                .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
+
+        if (followRepository.findByFollowerAndFollowing(follower, following) != null) {
+            throw new CustomException(ErrorCode.ALREADY_FOLLOWED);
+        }
+
+        Follow follow = Follow.builder()
+                .follower(follower)
+                .following(following)
+                .build();
+
+        followRepository.save(follow);
+    }
+}
