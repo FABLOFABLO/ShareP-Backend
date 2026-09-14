@@ -22,7 +22,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
+        String message = "입력값이 올바르지 않습니다.";
+
+        log.warn("{}: {}", 400, message);
+
         return ResponseEntity.badRequest()
-                .body(ErrorResponse.res(400, "입력값이 올바르지 않습니다."));
+                .body(ErrorResponse.res(400,message));
     }
 }

@@ -15,7 +15,7 @@ import java.util.Objects;
 public class PromptDeleteService {
     private final PromptRepository promptRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public void execute(Long id, Long currentUserId) {
         Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
         if (currentUserId == null || !Objects.equals(prompt.getAuthor(), currentUserId)) {
