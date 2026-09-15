@@ -17,3 +17,20 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
     open-in-view: false
+
+  data:
+    redis:
+      client-type: lettuce
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-exp: 3600000
+  refresh-exp: 1209600000
+  header: Authorization
+  prefix: Bearer
+
+logging:
+  level:
+    org.hibernate.sql: debug
+

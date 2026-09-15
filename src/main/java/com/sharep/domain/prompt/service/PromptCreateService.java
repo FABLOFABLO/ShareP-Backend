@@ -14,13 +14,13 @@ public class PromptCreateService {
     private final PromptRepository promptRepository;
 
     @Transactional
-    public void execute(PromptRequest promptRequest) {
+    public void execute(PromptRequest promptRequest, Long currentUserId) {
         Prompt prompt = Prompt.builder()
                 .title(promptRequest.getTitle())
                 .description(promptRequest.getDescription() != null ? promptRequest.getDescription() : "")
                 .prompt(promptRequest.getPrompt())
                 .tag(promptRequest.getTag())
-                .author(promptRequest.getAuthor())
+                .author(currentUserId)
                 .createAt(LocalDateTime.now())
                 .build();
 
