@@ -1,9 +1,6 @@
 package com.sharep.domain.prompt.presentation;
 
-import com.sharep.domain.prompt.presentation.dto.request.Filter;
-import com.sharep.domain.prompt.presentation.dto.request.PromptLikeRequest;
-import com.sharep.domain.prompt.presentation.dto.request.SortBy;
-import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
+import com.sharep.domain.prompt.presentation.dto.request.*;
 import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
 import com.sharep.domain.prompt.presentation.dto.response.PromptDetailResponse;
 import com.sharep.domain.prompt.service.*;
@@ -26,6 +23,7 @@ public class PromptController {
     private final PromptSearchService promptSearchService;
     private final PromptLikeService promptLikeService;
     private final PromptUnLikeService promptUnLikeService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void promptCreate(@Valid @RequestBody PromptRequest promptRequest,
@@ -35,14 +33,14 @@ public class PromptController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PromptAllResponse> promptReadAll(@RequestParam(value = "sort_by", required = false, defaultValue = "LATEST") SortBy sortBy) {
-        return promptReadAllService.execute(sortBy);
+    public List<PromptAllResponse> promptReadAll(@RequestBody PromptReadRequest promptReadRequest, @RequestParam(value = "sort_by", required = false, defaultValue = "LATEST") SortBy sortBy) {
+        return promptReadAllService.execute(sortBy,promptReadRequest);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PromptDetailResponse promptReadDetail(@PathVariable Long id) {
-        return promptReadDetailService.execute(id);
+    public PromptDetailResponse promptReadDetail(@RequestBody PromptReadRequest promptReadRequest, @PathVariable Long id) {
+        return promptReadDetailService.execute(id, promptReadRequest);
     }
 
     @DeleteMapping("/{id}")
@@ -55,10 +53,11 @@ public class PromptController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<PromptAllResponse> promptSearch(
+            @RequestBody PromptReadRequest promptReadRequest,
             @RequestParam(value = "search", defaultValue = "") String value,
             @RequestParam(value = "filter", defaultValue = "TITLE") Filter filter
             ) {
-        return promptSearchService.execute(value, filter);
+        return promptSearchService.execute(value, filter, promptReadRequest);
     }
 
     @PostMapping("/like")

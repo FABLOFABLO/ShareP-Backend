@@ -15,8 +15,9 @@ public class PromptDetailResponse {
     private final Long likeCount;
     private final LocalDateTime createAt;
     private final LocalDateTime nowTime;
+    private final Boolean liked;
 
-    public PromptDetailResponse(Prompt prompt) {
+    public PromptDetailResponse(Prompt prompt, Boolean liked) {
         this.id = prompt.getId();
         this.title = prompt.getTitle();
         this.description = prompt.getDescription();
@@ -26,5 +27,6 @@ public class PromptDetailResponse {
         this.likeCount = prompt.getLikeCount();
         this.createAt = prompt.getCreateAt();
         this.nowTime = LocalDateTime.now();
+        this.liked = liked;
     }
 }

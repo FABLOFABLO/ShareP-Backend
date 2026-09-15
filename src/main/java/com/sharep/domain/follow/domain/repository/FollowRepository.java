@@ -1,6 +1,6 @@
-package com.sharep.domain.user.domain.repository;
+package com.sharep.domain.follow.domain.repository;
 
-import com.sharep.domain.user.domain.Follow;
+import com.sharep.domain.follow.domain.Follow;
 import com.sharep.domain.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
