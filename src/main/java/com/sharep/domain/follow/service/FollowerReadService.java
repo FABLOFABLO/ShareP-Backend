@@ -1,13 +1,14 @@
-package com.sharep.domain.user.service;
+package com.sharep.domain.follow.service;
 
-import com.sharep.domain.user.domain.Follow;
-import com.sharep.domain.user.domain.repository.FollowRepository;
+import com.sharep.domain.follow.domain.Follow;
+import com.sharep.domain.follow.domain.repository.FollowRepository;
 import com.sharep.domain.user.domain.repository.UserRepository;
-import com.sharep.domain.user.presentation.dto.response.FollowResponse;
+import com.sharep.domain.follow.presentation.dto.response.FollowResponse;
 import com.sharep.global.error.exception.CustomException;
 import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,12 +18,19 @@ public class FollowerReadService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
 
-    public void execute(Long userId) {
+    @Transactional(readOnly = true)
+    public List<FollowResponse> execute(Long userId) {
+        if (userRepository.findById(userId).isEmpty()) {
+            throw new CustomException(ErrorCode.USERID_NOT_FOUND);
+        }
+
         List<Follow> follow = followRepository.findAllByFollower(userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FOLLOWER_NOT_FOUND)));
 
         List<FollowResponse> followResponse = follow.stream()
                 .map(FollowResponse::new)
                 .toList();
+
+        return followResponse;
     }
 }

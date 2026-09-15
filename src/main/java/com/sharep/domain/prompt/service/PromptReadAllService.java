@@ -1,9 +1,15 @@
 package com.sharep.domain.prompt.service;
 
 import com.sharep.domain.prompt.domain.Prompt;
+import com.sharep.domain.prompt.domain.repository.PromptLikeRepository;
+import com.sharep.domain.prompt.presentation.dto.request.PromptReadRequest;
 import com.sharep.domain.prompt.presentation.dto.request.SortBy;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
 import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
+import com.sharep.domain.user.domain.User;
+import com.sharep.domain.user.domain.repository.UserRepository;
+import com.sharep.global.error.exception.CustomException;
+import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,26 +19,36 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PromptReadAllService {
     private final PromptRepository promptRepository;
+    private final PromptLikeRepository promptLikeRepository;
+    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<PromptAllResponse> execute(SortBy sortBy) {
-        List<Prompt> prompt;
+    public List<PromptAllResponse> execute(SortBy sortBy, PromptReadRequest promptReadRequest) {
+        List<Prompt> prompts;
         List<PromptAllResponse> promptResponse;
+
+        User user = userRepository.findById(promptReadRequest.getId()).orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
 
         switch(sortBy) {
             case POPULARITY:
-                prompt = promptRepository.findAllByOrderByLikeCountDesc();
-                promptResponse = prompt.stream()
-                        .map(PromptAllResponse::new)
-                        .toList();
+                prompts = promptRepository.findAllByOrderByLikeCountDesc();
                 break;
                 default:
-                    prompt = promptRepository.findAllByOrderByCreateAtDesc();
-                    promptResponse = prompt.stream()
-                            .map(PromptAllResponse::new)
-                            .toList();
+                    prompts = promptRepository.findAllByOrderByCreateAtDesc();
                 break;
         }
+
+        promptResponse = prompts.stream()
+                .map(prompt -> {
+                    Boolean liked;
+                    if (promptLikeRepository.findByUserAndPrompt(user, prompt) != null) {
+                        return new PromptAllResponse(prompt, true);
+                    }
+                    else {
+                        return new PromptAllResponse(prompt, false);
+                    }
+                })
+                .toList();
 
         return promptResponse;
     }

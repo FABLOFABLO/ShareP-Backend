@@ -1,6 +1,6 @@
-package com.sharep.domain.user.presentation.dto.response;
+package com.sharep.domain.follow.presentation.dto.response;
 
-import com.sharep.domain.user.domain.Follow;
+import com.sharep.domain.follow.domain.Follow;
 import com.sharep.domain.user.domain.User;
 import lombok.Getter;
 

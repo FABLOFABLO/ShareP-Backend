@@ -1,4 +1,4 @@
-package com.sharep.domain.user.presentation.dto.request;
+package com.sharep.domain.follow.presentation.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
