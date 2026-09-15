@@ -21,9 +21,9 @@ public class PromptReadDetailService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public PromptDetailResponse execute(Long id, PromptReadRequest promptReadRequest) {
+    public PromptDetailResponse execute(Long id, Long userId) {
 
-        User user = userRepository.findById(promptReadRequest.getId()).orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
 
         Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
 

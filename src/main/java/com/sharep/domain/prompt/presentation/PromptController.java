@@ -33,14 +33,14 @@ public class PromptController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PromptAllResponse> promptReadAll(@RequestBody PromptReadRequest promptReadRequest, @RequestParam(value = "sort_by", required = false, defaultValue = "LATEST") SortBy sortBy) {
-        return promptReadAllService.execute(sortBy,promptReadRequest);
+    public List<PromptAllResponse> promptReadAll(@RequestParam(value = "user-id", defaultValue = "") Long userId, @RequestParam(value = "sort_by", required = false, defaultValue = "LATEST") SortBy sortBy) {
+        return promptReadAllService.execute(sortBy, userId);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PromptDetailResponse promptReadDetail(@RequestBody PromptReadRequest promptReadRequest, @PathVariable Long id) {
-        return promptReadDetailService.execute(id, promptReadRequest);
+    public PromptDetailResponse promptReadDetail(@RequestParam(value = "user-id", defaultValue = "") Long userId, @PathVariable Long id) {
+        return promptReadDetailService.execute(id, userId);
     }
 
     @DeleteMapping("/{id}")
@@ -53,11 +53,11 @@ public class PromptController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<PromptAllResponse> promptSearch(
-            @RequestBody PromptReadRequest promptReadRequest,
+            @RequestParam(value = "user-id", defaultValue = "") Long userId,
             @RequestParam(value = "search", defaultValue = "") String value,
             @RequestParam(value = "filter", defaultValue = "TITLE") Filter filter
             ) {
-        return promptSearchService.execute(value, filter, promptReadRequest);
+        return promptSearchService.execute(value, filter, userId);
     }
 
     @PostMapping("/like")

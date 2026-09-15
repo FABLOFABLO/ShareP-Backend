@@ -23,11 +23,11 @@ public class PromptReadAllService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<PromptAllResponse> execute(SortBy sortBy, PromptReadRequest promptReadRequest) {
+    public List<PromptAllResponse> execute(SortBy sortBy, Long userId) {
         List<Prompt> prompts;
         List<PromptAllResponse> promptResponse;
 
-        User user = userRepository.findById(promptReadRequest.getId()).orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
 
         switch(sortBy) {
             case POPULARITY:

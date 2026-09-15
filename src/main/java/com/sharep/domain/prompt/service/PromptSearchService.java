@@ -23,9 +23,9 @@ public class PromptSearchService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<PromptAllResponse> execute(String value, Filter filter, PromptReadRequest promptReadRequest) {
+    public List<PromptAllResponse> execute(String value, Filter filter, Long userId) {
         List<Prompt> prompts;
-        User user = userRepository.findById(promptReadRequest.getId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
 
         switch (filter) {
