@@ -14,11 +14,11 @@ public class UserSignupRequest {
     private static final String SPECIALS = "!@#$%^&*(),.?\":{}|<>";
 
     @NotBlank(message = "아이디는 필수입니다.")
-    @Size(max = 30, message = "아이디는 30자 이하로 입력해주세요.")
+    @Size(min =5, max = 30, message = "아이디는 30자 이하로 입력해주세요.")
     private String loginId;
 
     @NotBlank(message = "비밀번호는 필수입니다.")
-    @Size(max = 50, message = "비밀번호는 50자 이하로 입력해주세요.")
+    @Size(min = 8, max = 50, message = "비밀번호는 50자 이하로 입력해주세요.")
     private String password;
 
     @JsonIgnore

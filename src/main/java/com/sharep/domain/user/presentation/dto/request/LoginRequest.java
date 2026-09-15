@@ -8,11 +8,11 @@ import lombok.Getter;
 public class LoginRequest {
 
     @NotBlank
-    @Size(max = 30)
+    @Size(min = 5, max = 30)
     private String loginId;
 
     @NotBlank
-    @Size(max = 50)
+    @Size(min = 8, max = 50)
     private String password;
 
 }

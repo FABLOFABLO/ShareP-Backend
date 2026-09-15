@@ -11,8 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserSignupService userSignupService;

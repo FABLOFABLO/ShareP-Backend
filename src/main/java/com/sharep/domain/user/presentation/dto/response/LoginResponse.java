@@ -1,7 +1,5 @@
 package com.sharep.domain.user.presentation.dto.response;
 
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

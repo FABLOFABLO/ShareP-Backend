@@ -18,13 +18,14 @@ public class User {
     private Long id;
 
     @Column(name = "login_id", nullable = false, unique = true)
-    @Length(min = 5, max = 30)
+    @Length(max = 30)
     private String loginId;
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
     @Column(name = "password", nullable = false, length = 255)
+    @Length(max = 50)
     private String password;
 
     @Builder
@@ -33,5 +34,4 @@ public class User {
         this.password = password;
         this.nickname = "프롬프트 마스터";
     }
-
 }
