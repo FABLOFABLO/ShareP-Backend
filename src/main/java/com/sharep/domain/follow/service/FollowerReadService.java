@@ -20,7 +20,7 @@ public class FollowerReadService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<FollowingResponse> execute(Long userId, Long currentId) {
+    public List<FollowingResponse> execute(Long userId, User currentUser) {
         if (userRepository.findById(userId).isEmpty()) {
             throw new CustomException(ErrorCode.USERID_NOT_FOUND);
         }
@@ -30,17 +30,14 @@ public class FollowerReadService {
 
         List<FollowingResponse> followingResponse = follows.stream()
                 .map(follow -> {
-                    if (currentId.equals(userId)) {
+                    if (currentUser.equals(follow.getFollowing())) {
+                        return new FollowingResponse(follow, false);
+                    } else if (followRepository.findByFollowerAndFollowing(currentUser, follow.getFollower()) != null) {
                         return new FollowingResponse(follow, true);
-                    }
-                    User currentUser = userRepository.findById(currentId)
-                            .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
-                    if (followRepository.findByFollowerAndFollowing(currentUser, follow.getFollowing()) != null) {
-                        return new FollowingResponse(follow, true);
-                    }
-                    else {
+                    } else {
                         return new FollowingResponse(follow, false);
                     }
+
                 })
                 .toList();
 

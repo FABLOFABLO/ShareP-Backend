@@ -32,8 +32,8 @@ public class PromptReadAllService {
             case POPULARITY:
                 prompts = promptRepository.findAllByOrderByLikeCountDesc();
                 break;
-                default:
-                    prompts = promptRepository.findAllByOrderByCreateAtDesc();
+            default:
+                prompts = promptRepository.findAllByOrderByCreateAtDesc();
                 break;
         }
 

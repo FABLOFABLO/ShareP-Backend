@@ -9,12 +9,12 @@ public class FollowingResponse {
     private final Long followerId;
     private final String followerLoginId;
     private final String followerNickname;
-    private final Boolean follower;
+    private final Boolean following;
 
-    public FollowingResponse(Follow follow, Boolean follower) {
+    public FollowingResponse(Follow follow, Boolean following) {
         this.followerId = follow.getFollower().getId();
         this.followerLoginId = follow.getFollower().getLoginId();
         this.followerNickname = follow.getFollower().getNickname();
-        this.follower = follower;
+        this.following = following;
     }
 }
