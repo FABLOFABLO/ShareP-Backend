@@ -34,15 +34,16 @@ public class PromptController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PromptAllResponse> promptReadAll(@RequestParam(value = "user-id", defaultValue = "") Long userId,
+    public List<PromptAllResponse> promptReadAll(@AuthenticationPrincipal AuthDetails currentUser,
                                                  @RequestParam(value = "sort_by", required = false, defaultValue = "LATEST") SortBy sortBy) {
-        return promptReadAllService.execute(sortBy, userId);
+        return promptReadAllService.execute(sortBy, currentUser.getUser().getId());
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PromptDetailResponse promptReadDetail(@RequestParam(value = "user-id", defaultValue = "") Long userId, @PathVariable Long id) {
-        return promptReadDetailService.execute(id, userId);
+    public PromptDetailResponse promptReadDetail(@AuthenticationPrincipal AuthDetails currentUser,
+                                                 @PathVariable Long id) {
+        return promptReadDetailService.execute(id, currentUser.getUser().getId());
     }
 
     @DeleteMapping("/{id}")
@@ -55,23 +56,23 @@ public class PromptController {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<PromptAllResponse> promptSearch(
-            @RequestParam(value = "user-id", defaultValue = "") Long userId,
+            @AuthenticationPrincipal AuthDetails currentUser,
             @RequestParam(value = "search", defaultValue = "") String value,
             @RequestParam(value = "filter", defaultValue = "TITLE") Filter filter
             ) {
-        return promptSearchService.execute(value, filter, userId);
+        return promptSearchService.execute(value, filter, currentUser.getUser().getId());
     }
 
     @PostMapping("/like")
     @ResponseStatus(HttpStatus.OK)
-    public void promptLike(@RequestParam(value = "user-id") Long userId,@RequestParam(value = "prompt-id") Long promptId) {
-        promptLikeService.execute(userId, promptId);
+    public void promptLike(@AuthenticationPrincipal AuthDetails currentUser,@RequestParam(value = "prompt-id") Long promptId) {
+        promptLikeService.execute(currentUser.getUser().getId(), promptId);
     }
 
     @PostMapping("/unlike")
     @ResponseStatus(HttpStatus.OK)
-    public void promptUnLike(@RequestParam(value = "user-id") Long userId,@RequestParam(value = "prompt-id") Long promptId) {
-        promptUnLikeService.execute(userId, promptId);
+    public void promptUnLike(@AuthenticationPrincipal AuthDetails currentUser ,@RequestParam(value = "prompt-id") Long promptId) {
+        promptUnLikeService.execute(currentUser.getUser().getId(), promptId);
     }
 
     @GetMapping("/like")

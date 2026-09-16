@@ -6,6 +6,5 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class FollowRequest {
-    private Long followerId;
     private Long followingId;
 }
