@@ -39,13 +39,15 @@ public class FollowController {
 
     @GetMapping("/{id}/follower")
     @ResponseStatus(HttpStatus.OK)
-    public List<FollowerResponse> followerRead(@PathVariable Long id, @AuthenticationPrincipal AuthDetails currentUser) {
+    public List<FollowingResponse> followerRead(@PathVariable Long id,
+                                               @AuthenticationPrincipal AuthDetails currentUser) {
         return followerReadService.execute(id, currentUser.getUser().getId());
     }
 
     @GetMapping("/{id}/following")
     @ResponseStatus(HttpStatus.OK)
-    public List<FollowingResponse> followingRead(@PathVariable Long id, @AuthenticationPrincipal AuthDetails currentUser) {
+    public List<FollowerResponse> followingRead(@PathVariable Long id,
+                                                 @AuthenticationPrincipal AuthDetails currentUser) {
         return followingReadService.execute(id, currentUser.getUser().getId());
     }
 }
