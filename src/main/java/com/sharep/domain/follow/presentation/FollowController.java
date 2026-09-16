@@ -1,6 +1,5 @@
 package com.sharep.domain.follow.presentation;
 
-import com.sharep.domain.follow.presentation.dto.request.FollowRequest;
 import com.sharep.domain.follow.presentation.dto.response.FollowingResponse;
 import com.sharep.domain.follow.presentation.dto.response.FollowerResponse;
 import com.sharep.domain.follow.service.FollowService;
@@ -23,18 +22,18 @@ public class FollowController {
     private final FollowerReadService followerReadService;
     private final FollowingReadService followingReadService;
 
-    @PostMapping("/follow")
+    @PostMapping("/{id}/follow")
     @ResponseStatus(HttpStatus.CREATED)
-    public void follow(@RequestBody FollowRequest followRequest,
+    public void follow(@PathVariable Long id,
                        @AuthenticationPrincipal AuthDetails currentUser) {
-        followService.execute(followRequest, currentUser.getUser().getId());
+        followService.execute(id, currentUser.getUser().getId());
     }
 
-    @DeleteMapping("/unfollow")
+    @DeleteMapping("/{id}/unfollow")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void unFollow(@RequestBody FollowRequest followRequest,
+    public void unFollow(@PathVariable Long id,
                          @AuthenticationPrincipal AuthDetails currentUser) {
-        unFollowService.execute(followRequest, currentUser.getUser().getId());
+        unFollowService.execute(id, currentUser.getUser().getId());
     }
 
     @GetMapping("/{id}/follower")

@@ -4,7 +4,6 @@ import com.sharep.domain.follow.domain.Follow;
 import com.sharep.domain.follow.domain.repository.FollowRepository;
 import com.sharep.domain.user.domain.User;
 import com.sharep.domain.user.domain.repository.UserRepository;
-import com.sharep.domain.follow.presentation.dto.request.FollowRequest;
 import com.sharep.global.error.exception.CustomException;
 import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +17,10 @@ public class UnFollowService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void execute(FollowRequest followRequest, Long userId) {
+    public void execute(Long followingId, Long userId) {
         User follower = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
-        User following = userRepository.findById(followRequest.getFollowingId())
+        User following = userRepository.findById(followingId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
 
         if (followRepository.findByFollowerAndFollowing(follower, following) == null) {
