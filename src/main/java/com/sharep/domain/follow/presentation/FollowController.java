@@ -1,7 +1,8 @@
 package com.sharep.domain.follow.presentation;
 
 import com.sharep.domain.follow.presentation.dto.request.FollowRequest;
-import com.sharep.domain.follow.presentation.dto.response.FollowResponse;
+import com.sharep.domain.follow.presentation.dto.response.FollowingResponse;
+import com.sharep.domain.follow.presentation.dto.response.FollowerResponse;
 import com.sharep.domain.follow.service.FollowService;
 import com.sharep.domain.follow.service.FollowerReadService;
 import com.sharep.domain.follow.service.FollowingReadService;
@@ -34,13 +35,13 @@ public class FollowController {
 
     @GetMapping("/{id}/follower")
     @ResponseStatus(HttpStatus.OK)
-    public List<FollowResponse> followerRead(@PathVariable Long id) {
-        return followerReadService.execute(id);
+    public List<FollowerResponse> followerRead(@PathVariable Long id, @RequestParam(value = "user-id") Long userId) {
+        return followerReadService.execute(id, userId);
     }
 
     @GetMapping("/{id}/following")
     @ResponseStatus(HttpStatus.OK)
-    public List<FollowResponse> followingRead(@PathVariable Long id) {
-        return followingReadService.execute(id);
+    public List<FollowingResponse> followingRead(@PathVariable Long id, @RequestParam(value = "user-id") Long userId) {
+        return followingReadService.execute(id, userId);
     }
 }

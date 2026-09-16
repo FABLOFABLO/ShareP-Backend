@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Getter
@@ -18,20 +17,42 @@ public class User {
     private Long id;
 
     @Column(name = "login_id", nullable = false, unique = true)
-    @Length(max = 30)
     private String loginId;
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "password", nullable = false, length = 255)
-    @Length(max = 50)
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "follower_count", nullable = false)
+    private Long followerCount;
+
+    @Column(name = "following_count", nullable = false)
+    private Long followingCount;
 
     @Builder
     private User(String loginId, String password) {
         this.loginId = loginId;
         this.password = password;
         this.nickname = "프롬프트 마스터";
+        this.followerCount = 0L;
+        this.followingCount = 0L;
+    }
+
+    public void FollowerAdd() {
+        this.followerCount++;
+    }
+
+    public void FollowerDelete() {
+        this.followerCount--;
+    }
+
+    public void FollowingAdd() {
+        this.followingCount++;
+    }
+
+    public void FollowingDelete() {
+        this.followingCount--;
     }
 }

@@ -1,4 +1,4 @@
-package com.sharep.domain.user.presentation.response;
+package com.sharep.domain.user.presentation.dto.response;
 
 import lombok.Getter;
 

@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/user/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                         .requestMatchers("/prompt", "/prompt/**").authenticated()
+                        .requestMatchers("/follow", "/follow/**").authenticated()
                         .anyRequest().denyAll()
                 )
                 .addFilterBefore(
