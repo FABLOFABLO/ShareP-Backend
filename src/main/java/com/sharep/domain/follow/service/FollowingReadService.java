@@ -31,7 +31,10 @@ public class FollowingReadService {
 
         List<FollowerResponse> followerResponse = follows.stream()
                 .map(follow -> {
-                    if (followRepository.findByFollowerAndFollowing(currentUser, follow.getFollowing()) != null) {
+                    if (currentUser.getId().equals(follow.getFollowing().getId())) {
+                        return new FollowerResponse(follow, IsFollow.ME);
+                    }
+                    else if (followRepository.findByFollowerAndFollowing(currentUser, follow.getFollowing()) != null) {
                         return new FollowerResponse(follow, IsFollow.TRUE);
                     } else {
                         return new FollowerResponse(follow, IsFollow.FALSE);
