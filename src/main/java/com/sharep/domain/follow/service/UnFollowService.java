@@ -18,14 +18,14 @@ public class UnFollowService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void execute(FollowRequest followRequest) {
-        User follower = userRepository.findById(followRequest.getFollowerId())
+    public void execute(FollowRequest followRequest, Long userId) {
+        User follower = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
         User following = userRepository.findById(followRequest.getFollowingId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
 
-        if (followRepository.findByFollowerAndFollowing(follower, following) != null) {
-            throw new CustomException(ErrorCode.ALREADY_FOLLOWED);
+        if (followRepository.findByFollowerAndFollowing(follower, following) == null) {
+            throw new CustomException(ErrorCode.ALREADY_UNFOLLOWED);
         }
 
         if (follower == following) {

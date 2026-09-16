@@ -18,8 +18,8 @@ public class FollowService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void execute(FollowRequest followRequest) {
-        User follower = userRepository.findById(followRequest.getFollowerId())
+    public void execute(FollowRequest followRequest, Long userId) {
+        User follower = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
         User following = userRepository.findById(followRequest.getFollowingId())
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
