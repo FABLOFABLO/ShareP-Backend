@@ -63,16 +63,16 @@ public class PromptController {
         return promptSearchService.execute(value, filter, currentUser.getUser().getId());
     }
 
-    @PostMapping("/like")
+    @PostMapping("/{id}/like")
     @ResponseStatus(HttpStatus.OK)
-    public void promptLike(@AuthenticationPrincipal AuthDetails currentUser,@RequestParam(value = "prompt-id") Long promptId) {
-        promptLikeService.execute(currentUser.getUser().getId(), promptId);
+    public void promptLike(@AuthenticationPrincipal AuthDetails currentUser,@PathVariable Long id) {
+        promptLikeService.execute(currentUser.getUser().getId(), id);
     }
 
-    @PostMapping("/unlike")
+    @PostMapping("/{id}/unlike")
     @ResponseStatus(HttpStatus.OK)
-    public void promptUnLike(@AuthenticationPrincipal AuthDetails currentUser ,@RequestParam(value = "prompt-id") Long promptId) {
-        promptUnLikeService.execute(currentUser.getUser().getId(), promptId);
+    public void promptUnLike(@AuthenticationPrincipal AuthDetails currentUser ,@PathVariable Long id) {
+        promptUnLikeService.execute(currentUser.getUser().getId(), id);
     }
 
     @GetMapping("/like")
