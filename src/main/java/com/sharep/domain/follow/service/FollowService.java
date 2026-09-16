@@ -1,8 +1,8 @@
 package com.sharep.domain.follow.service;
 
 import com.sharep.domain.follow.domain.Follow;
-import com.sharep.domain.user.domain.User;
 import com.sharep.domain.follow.domain.repository.FollowRepository;
+import com.sharep.domain.user.domain.User;
 import com.sharep.domain.user.domain.repository.UserRepository;
 import com.sharep.domain.follow.presentation.dto.request.FollowRequest;
 import com.sharep.global.error.exception.CustomException;

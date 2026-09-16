@@ -4,7 +4,6 @@ import com.sharep.domain.prompt.domain.Prompt;
 import com.sharep.domain.prompt.domain.repository.PromptLikeRepository;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
 import com.sharep.domain.prompt.presentation.dto.request.Filter;
-import com.sharep.domain.prompt.presentation.dto.request.PromptReadRequest;
 import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
 import com.sharep.domain.user.domain.User;
 import com.sharep.domain.user.domain.repository.UserRepository;

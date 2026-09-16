@@ -3,7 +3,6 @@ package com.sharep.domain.prompt.service;
 import com.sharep.domain.prompt.domain.Prompt;
 import com.sharep.domain.prompt.domain.repository.PromptLikeRepository;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
-import com.sharep.domain.prompt.presentation.dto.request.PromptReadRequest;
 import com.sharep.domain.prompt.presentation.dto.response.PromptDetailResponse;
 import com.sharep.domain.user.domain.User;
 import com.sharep.domain.user.domain.repository.UserRepository;
@@ -31,7 +30,7 @@ public class PromptReadDetailService {
             return new PromptDetailResponse(prompt, true);
         }
         else {
-            return new PromptDetailResponse(prompt, true);
+            return new PromptDetailResponse(prompt, false);
         }
     }
 }

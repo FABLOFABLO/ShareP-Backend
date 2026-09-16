@@ -23,6 +23,7 @@ public class PromptController {
     private final PromptSearchService promptSearchService;
     private final PromptLikeService promptLikeService;
     private final PromptUnLikeService promptUnLikeService;
+    private final LikedPromptReadService likedPromptReadService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -33,7 +34,8 @@ public class PromptController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PromptAllResponse> promptReadAll(@RequestParam(value = "user-id", defaultValue = "") Long userId, @RequestParam(value = "sort_by", required = false, defaultValue = "LATEST") SortBy sortBy) {
+    public List<PromptAllResponse> promptReadAll(@RequestParam(value = "user-id", defaultValue = "") Long userId,
+                                                 @RequestParam(value = "sort_by", required = false, defaultValue = "LATEST") SortBy sortBy) {
         return promptReadAllService.execute(sortBy, userId);
     }
 
@@ -62,13 +64,19 @@ public class PromptController {
 
     @PostMapping("/like")
     @ResponseStatus(HttpStatus.OK)
-    public void promptLike(@RequestBody PromptLikeRequest promptLikeRequest) {
-        promptLikeService.execute(promptLikeRequest);
+    public void promptLike(@RequestParam(value = "user-id") Long userId,@RequestParam(value = "prompt-id") Long promptId) {
+        promptLikeService.execute(userId, promptId);
     }
 
     @PostMapping("/unlike")
     @ResponseStatus(HttpStatus.OK)
-    public void promptUnLike(@RequestBody PromptLikeRequest promptLikeRequest) {
-        promptUnLikeService.execute(promptLikeRequest);
+    public void promptUnLike(@RequestParam(value = "user-id") Long userId,@RequestParam(value = "prompt-id") Long promptId) {
+        promptUnLikeService.execute(userId, promptId);
+    }
+
+    @GetMapping("/like")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PromptAllResponse> promptLikedRead(@AuthenticationPrincipal AuthDetails currentUser) {
+        return likedPromptReadService.execute(currentUser.getUser().getId());
     }
 }
