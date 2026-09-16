@@ -3,6 +3,7 @@ package com.sharep.domain.follow.service;
 import com.sharep.domain.follow.domain.Follow;
 import com.sharep.domain.follow.domain.repository.FollowRepository;
 import com.sharep.domain.follow.presentation.dto.response.FollowerResponse;
+import com.sharep.domain.follow.presentation.dto.response.IsFollow;
 import com.sharep.domain.user.domain.User;
 import com.sharep.domain.user.domain.repository.UserRepository;
 import com.sharep.global.error.exception.CustomException;
@@ -31,10 +32,9 @@ public class FollowingReadService {
         List<FollowerResponse> followerResponse = follows.stream()
                 .map(follow -> {
                     if (followRepository.findByFollowerAndFollowing(currentUser, follow.getFollowing()) != null) {
-                        return new FollowerResponse(follow, true);
-                    }
-                    else {
-                        return new FollowerResponse(follow, false);
+                        return new FollowerResponse(follow, IsFollow.TRUE);
+                    } else {
+                        return new FollowerResponse(follow, IsFollow.FALSE);
                     }
                 })
                 .toList();

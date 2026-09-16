@@ -9,9 +9,9 @@ public class FollowingResponse {
     private final Long followerId;
     private final String followerLoginId;
     private final String followerNickname;
-    private final Boolean following;
+    private final IsFollow following;
 
-    public FollowingResponse(Follow follow, Boolean following) {
+    public FollowingResponse(Follow follow, IsFollow following) {
         this.followerId = follow.getFollower().getId();
         this.followerLoginId = follow.getFollower().getLoginId();
         this.followerNickname = follow.getFollower().getNickname();
