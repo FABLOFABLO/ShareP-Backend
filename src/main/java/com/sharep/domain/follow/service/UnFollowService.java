@@ -23,15 +23,15 @@ public class UnFollowService {
         User following = userRepository.findById(followingId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
 
-        if (followRepository.findByFollowerAndFollowing(follower, following) == null) {
+        Follow follow = followRepository.findByFollowerAndFollowing(follower, following);
+
+        if (follow == null) {
             throw new CustomException(ErrorCode.ALREADY_UNFOLLOWED);
         }
 
         if (follower == following) {
             throw new CustomException(ErrorCode.SAME_PERSON);
         }
-
-        Follow follow = followRepository.findByFollowerAndFollowing(follower, following);
 
         follower.FollowingDelete();
         following.FollowerDelete();

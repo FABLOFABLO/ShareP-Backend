@@ -21,12 +21,10 @@ public class FollowingReadService {
 
     @Transactional(readOnly = true)
     public List<FollowerResponse> execute(Long userId, User currentUser) {
-        if (userRepository.findById(userId).isEmpty()) {
-            throw new CustomException(ErrorCode.USERID_NOT_FOUND);
-        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
 
-        List<Follow> follows = followRepository.findAllByFollower(userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.FOLLOWING_NOT_FOUND)));
+        List<Follow> follows = followRepository.findAllByFollower(user);
 
         List<FollowerResponse> followerResponse = follows.stream()
                 .map(follow -> {
