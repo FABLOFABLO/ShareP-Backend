@@ -1,8 +1,8 @@
 package com.sharep.global.jwt;
 
 import com.sharep.global.auth.AuthDetailsService;
-import com.sharep.global.refresh.RefreshToken;
-import com.sharep.global.refresh.RefreshTokenRepository;
+import com.sharep.global.logout.AccessTokenBlacklist;
+import com.sharep.global.refresh.RefreshTokenStore;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -29,7 +29,8 @@ public class JwtTokenProvider {
 
     private final JwtProperty jwtProperty;
     private final AuthDetailsService authDetailsService;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenStore refreshTokenStore;
+    private final AccessTokenBlacklist accessTokenBlacklist;
 
     private SecretKey key;
 
@@ -42,15 +43,21 @@ public class JwtTokenProvider {
         return generateToken(loginId, "access", jwtProperty.getAccessExp());
     }
 
-    public String generateRefreshToken(String loginId) {
-        String token = generateToken(loginId, "refresh", jwtProperty.getRefreshExp());
-        refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .accountId(loginId)
-                        .token(token)
-                        .ttl(TimeUnit.MILLISECONDS.toSeconds(jwtProperty.getRefreshExp()))
-                        .build()
+    public String createRefreshToken(String loginId) {
+        return generateToken(
+                loginId,
+                "refresh",
+                jwtProperty.getRefreshExp()
         );
+    }
+    public String generateRefreshToken(String loginId) {
+        String token = createRefreshToken(loginId);
+        refreshTokenStore.save(
+                loginId,
+                token,
+                jwtProperty.getRefreshExp()
+        );
+
         return token;
     }
 
@@ -59,6 +66,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .header().add("type", type).and()
                 .subject(subject)
+                .id(UUID.randomUUID().toString())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusMillis(expirationMillis)))
                 .signWith(key, Jwts.SIG.HS256)
@@ -85,6 +93,11 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         Claims claims = parseAccessClaims(token);
+
+        if (accessTokenBlacklist.isBlocked(claims.getId())) {
+            throw new BadCredentialsException("Logged out access token");
+        }
+
         UserDetails user = authDetailsService.loadUserByUsername(claims.getSubject());
 
         if (!user.isEnabled() || !user.isAccountNonLocked()
@@ -94,7 +107,17 @@ public class JwtTokenProvider {
 
         return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
+    public String getAccessTokenId(String token) {
+        Claims claims = parseAccessClaims(token);
+        return claims.getId();
+    }
 
+    public long getAccessTokenRemainingMillis(String token) {
+        Claims claims = parseAccessClaims(token);
+
+        return claims.getExpiration().getTime()
+                - System.currentTimeMillis();
+    }
     private Claims parseAccessClaims(String token) {
         try {
             Jws<Claims> jwt = Jwts.parser()
@@ -105,12 +128,36 @@ public class JwtTokenProvider {
 
             if (!"access".equals(jwt.getHeader().get("type"))
                     || claims.getSubject() == null || claims.getSubject().isBlank()
-                    || claims.getExpiration() == null) {
+                    || claims.getExpiration() == null
+                    || claims.getId() == null || claims.getId().isBlank()) {
                 throw new BadCredentialsException("Invalid access token");
             }
             return claims;
         } catch (JwtException | IllegalArgumentException e) {
             throw new BadCredentialsException("Invalid or expired JWT token", e);
+        }
+    }
+    public String getLoginIdFromRefreshToken(String token) {
+        try {
+            Jws<Claims> jwt = Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token);
+
+            Claims claims = jwt.getPayload();
+
+            if (!"refresh".equals(jwt.getHeader().get("type"))
+                ||claims.getSubject() == null
+                ||claims.getSubject().isBlank()
+                ||claims.getExpiration() == null){
+                throw new BadCredentialsException("Invalid refresh token");
+            }
+
+            return claims.getSubject();
+
+        }catch (JwtException | IllegalArgumentException e){
+            throw new BadCredentialsException(
+                    "Invalid or expired refresh token", e);
         }
     }
 }
