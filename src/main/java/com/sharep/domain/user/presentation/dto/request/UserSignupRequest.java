@@ -18,7 +18,7 @@ public class UserSignupRequest {
     private String loginId;
 
     @NotBlank(message = "비밀번호는 필수입니다.")
-    @Size(min = 8, max = 50, message = "비밀번호는 50자 이하로 입력해주세요.")
+    @Size(min = 9, max = 50, message = "비밀번호는 9자 이상 50자 이하로 입력해주세요.")
     private String password;
 
     @JsonIgnore

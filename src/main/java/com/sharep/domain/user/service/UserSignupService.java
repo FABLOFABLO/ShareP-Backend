@@ -6,9 +6,12 @@ import com.sharep.domain.user.presentation.dto.request.UserSignupRequest;
 import com.sharep.global.error.exception.CustomException;
 import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.SQLException;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,24 @@ public class UserSignupService {
                 .password(passwordEncoder.encode(request.getPassword()))
                         .build();
 
-        userRepository.save(user);
+        try {
+            userRepository.saveAndFlush(user);
+        } catch (DataIntegrityViolationException e) {
+            if (isDuplicateKey(e)) {
+                throw new CustomException(ErrorCode.USER_ALREADY_EXISTS);
+            }
+            throw e;
+        }
+    }
+
+    private boolean isDuplicateKey(Throwable exception) {
+        for (Throwable cause = exception; cause != null; cause = cause.getCause()) {
+            // MySQL duplicate-key error; other integrity failures must not become 409.
+            if (cause instanceof SQLException sqlException
+                    && sqlException.getErrorCode() == 1062) {
+                return true;
+            }
+        }
+        return false;
     }
 }

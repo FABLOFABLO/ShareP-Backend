@@ -23,10 +23,15 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private static final RequestMatcher PUBLIC_ENDPOINTS = new OrRequestMatcher(
-            PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/user/signup"),
-            PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, "/user/login")
-    );
+    private static final RequestMatcher PUBLIC_ENDPOINTS =
+            new OrRequestMatcher(
+                    PathPatternRequestMatcher.withDefaults()
+                            .matcher(HttpMethod.POST, "/user/signup"),
+                    PathPatternRequestMatcher.withDefaults()
+                            .matcher(HttpMethod.POST, "/user/login"),
+                    PathPatternRequestMatcher.withDefaults()
+                            .matcher(HttpMethod.POST, "/user/reissue")
+            );
 
     private final JwtTokenProvider jwtTokenProvider;
     private final SecurityExceptionHandler securityExceptionHandler;

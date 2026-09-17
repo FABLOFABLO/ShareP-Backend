@@ -25,7 +25,6 @@ public class User {
     private String nickname;
 
     @Column(name = "password", nullable = false, length = 255)
-    @Length(max = 50)
     private String password;
 
     @Builder

@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/reissue").permitAll()
                         .requestMatchers("/prompt", "/prompt/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/user/logout").authenticated()
                         .anyRequest().denyAll()
