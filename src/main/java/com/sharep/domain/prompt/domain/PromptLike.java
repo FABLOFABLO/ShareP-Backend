@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tbl_prompt_like")
+@Table(name = "tbl_prompt_like", uniqueConstraints = {
+        @UniqueConstraint(name = "like_unique", columnNames = {"user_id", "prompt_id"})
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PromptLike {

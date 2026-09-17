@@ -18,6 +18,9 @@ public class FollowService {
 
     @Transactional
     public void execute(Long followingId, Long userId) {
+        if (userId.equals(followingId)) {
+            throw new CustomException(ErrorCode.SAME_PERSON);
+        }
         User follower = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
         User following = userRepository.findById(followingId)
@@ -27,9 +30,6 @@ public class FollowService {
             throw new CustomException(ErrorCode.ALREADY_FOLLOWED);
         }
 
-        if (follower == following) {
-            throw new CustomException(ErrorCode.SAME_PERSON);
-        }
 
         Follow follow = Follow.builder()
                 .follower(follower)
