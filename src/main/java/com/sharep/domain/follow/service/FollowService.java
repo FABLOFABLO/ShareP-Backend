@@ -29,8 +29,7 @@ public class FollowService {
         if (followRepository.findByFollowerAndFollowing(follower, following) != null) {
             throw new CustomException(ErrorCode.ALREADY_FOLLOWED);
         }
-
-
+        
         Follow follow = Follow.builder()
                 .follower(follower)
                 .following(following)
