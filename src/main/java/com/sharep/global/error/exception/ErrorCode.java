@@ -11,7 +11,7 @@ public enum ErrorCode {
     LOGIN_FAILED(401, "아이디 또는 비밀번호가 올바르지 않습니다."),
     FORBIDDEN(403, "권한이 없습니다."),
     USERID_NOT_FOUND(404, "해당 유저아이디를 가진 유저를 찾을 수 없습니다."),
-    ALREADY_LIKED(409, "이미 해당 게시글에 좋아요를 눌렀습니다."),
+    ALREADY_LIKED(409, "이미 해당 게시글에 좋아요가 눌러져 있습니다."),
     ALREADY_UNLIKED(409, "이미 해당 게시글에 좋아요가 안눌러져 있습니다."),
     ALREADY_FOLLOWED(409, "이미 해당 유저를 팔로우하고 있습니다."),
     ALREADY_UNFOLLOWED(409, "이미 해당 유저 팔로우하고 있지 않습니다."),

@@ -9,6 +9,7 @@ import com.sharep.domain.follow.service.UnFollowService;
 import com.sharep.global.auth.AuthDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -22,11 +23,10 @@ public class FollowController {
     private final FollowerReadService followerReadService;
     private final FollowingReadService followingReadService;
 
-    @PostMapping("/{id}/follow")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void follow(@PathVariable Long id,
-                       @AuthenticationPrincipal AuthDetails currentUser) {
-        followService.execute(id, currentUser.getUser().getId());
+    @PutMapping("/{id}/follow")
+    public ResponseEntity follow(@PathVariable Long id,
+                                 @AuthenticationPrincipal AuthDetails currentUser) {
+        return followService.execute(id, currentUser.getUser().getId());
     }
 
     @DeleteMapping("/{id}/unfollow")

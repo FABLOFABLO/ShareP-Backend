@@ -64,10 +64,10 @@ public class PromptController {
         return promptSearchService.execute(value, filter, currentUser.getUser().getId());
     }
 
-    @PostMapping("/{id}/like")
-    @ResponseStatus(HttpStatus.OK)
-    public void promptLike(@AuthenticationPrincipal AuthDetails currentUser,@PathVariable Long id) {
-        promptLikeService.execute(currentUser.getUser().getId(), id);
+    @PutMapping("/{id}/like")
+    public ResponseEntity promptLike(@AuthenticationPrincipal AuthDetails currentUser,
+                                     @PathVariable Long id) {
+        return promptLikeService.execute(currentUser.getUser().getId(), id);
     }
 
     @DeleteMapping("/{id}/unlike")
