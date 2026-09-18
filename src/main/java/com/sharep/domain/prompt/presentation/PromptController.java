@@ -8,6 +8,7 @@ import com.sharep.global.auth.AuthDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -29,7 +30,7 @@ public class PromptController {
     @ResponseStatus(HttpStatus.CREATED)
     public void promptCreate(@Valid @RequestBody PromptRequest promptRequest,
                              @AuthenticationPrincipal AuthDetails currentUser) {
-        promptCreateService.execute(promptRequest, currentUser.getUser().getId());
+        promptCreateService.execute(promptRequest, currentUser.getUser());
     }
 
     @GetMapping
@@ -50,7 +51,7 @@ public class PromptController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void promptDelete(@PathVariable Long id,
                              @AuthenticationPrincipal AuthDetails currentUser) {
-        promptDeleteService.execute(id, currentUser.getUser().getId());
+        promptDeleteService.execute(id, currentUser.getUser());
     }
 
     @GetMapping("/search")
@@ -69,9 +70,10 @@ public class PromptController {
         promptLikeService.execute(currentUser.getUser().getId(), id);
     }
 
-    @PostMapping("/{id}/unlike")
-    @ResponseStatus(HttpStatus.OK)
-    public void promptUnLike(@AuthenticationPrincipal AuthDetails currentUser ,@PathVariable Long id) {
+    @DeleteMapping("/{id}/unlike")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void promptUnLike(@AuthenticationPrincipal AuthDetails currentUser,
+                             @PathVariable Long id) {
         promptUnLikeService.execute(currentUser.getUser().getId(), id);
     }
 

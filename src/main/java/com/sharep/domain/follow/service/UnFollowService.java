@@ -18,6 +18,9 @@ public class UnFollowService {
 
     @Transactional
     public void execute(Long followingId, Long userId) {
+        if (userId.equals(followingId)) {
+            throw new CustomException(ErrorCode.SAME_PERSON);
+        }
         User follower = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
         User following = userRepository.findById(followingId)
@@ -27,10 +30,6 @@ public class UnFollowService {
 
         if (follow == null) {
             throw new CustomException(ErrorCode.ALREADY_UNFOLLOWED);
-        }
-
-        if (follower == following) {
-            throw new CustomException(ErrorCode.SAME_PERSON);
         }
 
         follower.FollowingDelete();

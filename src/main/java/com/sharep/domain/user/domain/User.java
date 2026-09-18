@@ -25,6 +25,9 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "prompt_count", nullable = false)
+    private Long promptCount;
+
     @Column(name = "follower_count", nullable = false)
     private Long followerCount;
 
@@ -36,8 +39,17 @@ public class User {
         this.loginId = loginId;
         this.password = password;
         this.nickname = "프롬프트 마스터";
+        this.promptCount = 0L;
         this.followerCount = 0L;
         this.followingCount = 0L;
+    }
+
+    public void PromptAdd() {
+        this.promptCount++;
+    }
+
+    public void PromptDelete() {
+        this.promptCount--;
     }
 
     public void FollowerAdd() {

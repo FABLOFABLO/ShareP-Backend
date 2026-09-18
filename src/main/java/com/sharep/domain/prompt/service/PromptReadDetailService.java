@@ -26,11 +26,12 @@ public class PromptReadDetailService {
 
         Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
 
+        User author = userRepository.findById(prompt.getId()).orElseThrow();
         if (promptLikeRepository.findByUserAndPrompt(user, prompt) != null) {
-            return new PromptDetailResponse(prompt, true);
+            return new PromptDetailResponse(prompt, author.getNickname(), true);
         }
         else {
-            return new PromptDetailResponse(prompt, false);
+            return new PromptDetailResponse(prompt, author.getNickname(), false);
         }
     }
 }
