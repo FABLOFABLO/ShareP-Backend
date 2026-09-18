@@ -9,11 +9,8 @@ import com.sharep.domain.user.domain.repository.UserRepository;
 import com.sharep.global.error.exception.CustomException;
 import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.net.URI;
 
 @Service
 @RequiredArgsConstructor
@@ -23,14 +20,14 @@ public class PromptLikeService {
     private final PromptRepository promptRepository;
 
     @Transactional
-    public ResponseEntity execute(Long userId, Long promptId) {
+    public void execute(Long userId, Long promptId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
         Prompt prompt = promptRepository.findById(promptId)
                 .orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
 
         if (promptLikeRepository.findByUserAndPrompt(user, prompt) != null) {
-            return ResponseEntity.noContent().build();
+            return;
         }
 
         PromptLike promptLike = PromptLike.builder()
@@ -40,7 +37,5 @@ public class PromptLikeService {
 
         promptLikeRepository.save(promptLike);
         prompt.LikeAdd();
-
-        return ResponseEntity.created(URI.create("")).build();
     }
 }

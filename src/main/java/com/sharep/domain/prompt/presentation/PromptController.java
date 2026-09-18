@@ -8,7 +8,6 @@ import com.sharep.global.auth.AuthDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -65,9 +64,10 @@ public class PromptController {
     }
 
     @PutMapping("/{id}/like")
-    public ResponseEntity promptLike(@AuthenticationPrincipal AuthDetails currentUser,
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void promptLike(@AuthenticationPrincipal AuthDetails currentUser,
                                      @PathVariable Long id) {
-        return promptLikeService.execute(currentUser.getUser().getId(), id);
+        promptLikeService.execute(currentUser.getUser().getId(), id);
     }
 
     @DeleteMapping("/{id}/unlike")
