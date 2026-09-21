@@ -28,10 +28,10 @@ public class TokenReissueService {
         String loginId = user.getLoginId();
 
         String newAccessToken =
-                jwtTokenProvider.generateAccessToken(loginId);
+                jwtTokenProvider.generateAccessToken(user);
 
         String newRefreshToken =
-                jwtTokenProvider.createRefreshToken(loginId);
+                jwtTokenProvider.createRefreshToken(user);
 
         boolean rotated = refreshTokenStore.rotate(
                 loginId,

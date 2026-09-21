@@ -18,7 +18,6 @@ public class JwtProperty {
     @NotBlank
     private final String secretKey;
 
-    // JWT expiration settings and RefreshTokenStore TTL are both milliseconds.
     @NotNull
     @Positive
     private final Long accessExp;

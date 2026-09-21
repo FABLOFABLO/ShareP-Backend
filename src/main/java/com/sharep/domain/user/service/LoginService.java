@@ -32,10 +32,10 @@ public class LoginService {
         }
 
         String accessToken =
-                jwtTokenProvider.generateAccessToken(user.getLoginId());
+                jwtTokenProvider.generateAccessToken(user);
 
         String refreshToken =
-                jwtTokenProvider.generateRefreshToken(user.getLoginId());
+                jwtTokenProvider.generateRefreshToken(user);
 
         return new LoginResponse(accessToken, refreshToken);
     }

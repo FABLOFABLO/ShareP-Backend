@@ -42,7 +42,6 @@ public class UserSignupService {
 
     private boolean isDuplicateKey(Throwable exception) {
         for (Throwable cause = exception; cause != null; cause = cause.getCause()) {
-            // MySQL duplicate-key error; other integrity failures must not become 409.
             if (cause instanceof SQLException sqlException
                     && sqlException.getErrorCode() == 1062) {
                 return true;
