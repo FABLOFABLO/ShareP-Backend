@@ -1,6 +1,8 @@
 package com.sharep.global.jwt;
 
 import com.sharep.global.auth.AuthDetailsService;
+import com.sharep.global.auth.AuthDetails;
+import com.sharep.domain.user.domain.User;
 import com.sharep.global.logout.AccessTokenBlacklist;
 import com.sharep.global.refresh.RefreshTokenStore;
 import io.jsonwebtoken.Claims;
@@ -22,6 +24,8 @@ import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
+import java.util.Objects;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Component
 @RequiredArgsConstructor
@@ -39,21 +43,21 @@ public class JwtTokenProvider {
         key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperty.getSecretKey()));
     }
 
-    public String generateAccessToken(String loginId) {
-        return generateToken(loginId, "access", jwtProperty.getAccessExp());
+    public String generateAccessToken(User user) {
+        return generateToken(user, "access", jwtProperty.getAccessExp());
     }
 
-    public String createRefreshToken(String loginId) {
+    public String createRefreshToken(User user) {
         return generateToken(
-                loginId,
+                user,
                 "refresh",
                 jwtProperty.getRefreshExp()
         );
     }
-    public String generateRefreshToken(String loginId) {
-        String token = createRefreshToken(loginId);
+    public String generateRefreshToken(User user) {
+        String token = createRefreshToken(user);
         refreshTokenStore.save(
-                loginId,
+                user.getLoginId(),
                 token,
                 jwtProperty.getRefreshExp()
         );
@@ -61,11 +65,13 @@ public class JwtTokenProvider {
         return token;
     }
 
-    private String generateToken(String subject, String type, long expirationMillis) {
+    private String generateToken(User user, String type, long expirationMillis) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .header().add("type", type).and()
-                .subject(subject)
+                .subject(user.getLoginId())
+                .claim("uid", user.getId().toString())
+                .claim("credentials", Objects.toString(user.getCredentialStamp(), ""))
                 .id(UUID.randomUUID().toString())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusMillis(expirationMillis)))
@@ -98,7 +104,7 @@ public class JwtTokenProvider {
             throw new BadCredentialsException("Logged out access token");
         }
 
-        UserDetails user = authDetailsService.loadUserByUsername(claims.getSubject());
+        UserDetails user = validateCurrentUser(claims);
 
         if (!user.isEnabled() || !user.isAccountNonLocked()
                 || !user.isAccountNonExpired() || !user.isCredentialsNonExpired()) {
@@ -153,11 +159,26 @@ public class JwtTokenProvider {
                 throw new BadCredentialsException("Invalid refresh token");
             }
 
-            return claims.getSubject();
+            return validateCurrentUser(claims).getUsername();
 
         }catch (JwtException | IllegalArgumentException e){
             throw new BadCredentialsException(
                     "Invalid or expired refresh token", e);
         }
+    }
+
+    private AuthDetails validateCurrentUser(Claims claims) {
+        AuthDetails user;
+        try {
+            user = authDetailsService.loadUserByUsername(claims.getSubject());
+        } catch (UsernameNotFoundException exception) {
+            throw new BadCredentialsException("Account unavailable", exception);
+        }
+        if (!user.getUser().getId().toString().equals(claims.get("uid", String.class))
+                || !Objects.toString(user.getUser().getCredentialStamp(), "")
+                .equals(claims.get("credentials", String.class))) {
+            throw new BadCredentialsException("Credentials changed");
+        }
+        return user;
     }
 }

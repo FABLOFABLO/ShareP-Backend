@@ -1,6 +1,12 @@
 package com.sharep.domain.user.presentation;
 
 import com.sharep.domain.user.presentation.dto.request.LoginRequest;
+import com.sharep.domain.user.presentation.dto.request.LoginIdChangeRequest;
+import com.sharep.domain.user.presentation.dto.request.NicknameChangeRequest;
+import com.sharep.domain.user.presentation.dto.request.PasswordChangeRequest;
+import com.sharep.domain.user.presentation.dto.response.LoginIdChangeResponse;
+import com.sharep.domain.user.presentation.dto.response.NicknameChangeResponse;
+import com.sharep.domain.user.service.UserAccountService;
 import com.sharep.domain.user.presentation.dto.request.TokenReissueRequest;
 import com.sharep.domain.user.presentation.dto.request.UserSignupRequest;
 import com.sharep.domain.user.presentation.dto.response.LoginResponse;
@@ -27,6 +33,26 @@ public class UserController {
     private final LogoutService logoutService;
     private final TokenReissueService tokenReissueService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserAccountService userAccountService;
+
+    @PatchMapping("/nickname")
+    public NicknameChangeResponse changeNickname(@AuthenticationPrincipal AuthDetails currentUser,
+                                                  @Valid @RequestBody NicknameChangeRequest request) {
+        return userAccountService.changeNickname(currentUser.getUser(), request);
+    }
+
+    @PatchMapping("/id")
+    public LoginIdChangeResponse changeLoginId(@AuthenticationPrincipal AuthDetails currentUser,
+                                               @Valid @RequestBody LoginIdChangeRequest request) {
+        return userAccountService.changeLoginId(currentUser.getUser(), request);
+    }
+
+    @PatchMapping("/password")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changePassword(@AuthenticationPrincipal AuthDetails currentUser,
+                               @Valid @RequestBody PasswordChangeRequest request) {
+        userAccountService.changePassword(currentUser.getUser(), request);
+    }
 
     @PostMapping("/reissue")
     public LoginResponse reissue(
