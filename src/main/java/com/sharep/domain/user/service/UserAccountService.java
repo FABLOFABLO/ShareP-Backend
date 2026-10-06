@@ -9,14 +9,14 @@ import com.sharep.domain.user.presentation.dto.response.LoginIdChangeResponse;
 import com.sharep.domain.user.presentation.dto.response.NicknameChangeResponse;
 import com.sharep.global.error.exception.CustomException;
 import com.sharep.global.error.exception.ErrorCode;
-import com.sharep.global.refresh.RefreshTokenStore;
+import com.sharep.global.error.MySqlErrors;
+import com.sharep.global.jwt.RefreshTokenStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.Objects;
 
 @Service
@@ -29,38 +29,33 @@ public class UserAccountService {
 
     public NicknameChangeResponse changeNickname(User authenticatedUser, NicknameChangeRequest request) {
         User user = loadCurrentUser(authenticatedUser);
-        if (user.getNickname().equals(request.nickname())) {
+        if (user.getNickname().equals(request.getNickname())) {
             return new NicknameChangeResponse(user.getNickname());
         }
-        if (User.DEFAULT_NICKNAME.equals(request.nickname())
-                || userRepository.existsByNicknameAndIdNot(request.nickname(), user.getId())) {
-            throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
-        }
-        user.changeNickname(request.nickname());
-        flush(ErrorCode.NICKNAME_ALREADY_EXISTS);
+        user.changeNickname(request.getNickname());
         return new NicknameChangeResponse(user.getNickname());
     }
 
     public LoginIdChangeResponse changeLoginId(User authenticatedUser, LoginIdChangeRequest request) {
         User user = loadCurrentUser(authenticatedUser);
-        verifyPassword(request.password(), user);
-        if (user.getLoginId().equals(request.newId())) {
+        verifyPassword(request.getPassword(), user);
+        if (user.getLoginId().equals(request.getNewId())) {
             return new LoginIdChangeResponse(user.getLoginId());
         }
-        if (userRepository.existsByLoginIdAndIdNot(request.newId(), user.getId())) {
+        if (userRepository.existsByLoginId(request.getNewId())) {
             throw new CustomException(ErrorCode.USER_ALREADY_EXISTS);
         }
         String previousLoginId = user.getLoginId();
-        user.changeLoginId(request.newId());
-        flush(ErrorCode.USER_ALREADY_EXISTS);
+        user.changeLoginId(request.getNewId());
+        flushLoginIdChange();
         refreshTokenStore.delete(previousLoginId);
         return new LoginIdChangeResponse(user.getLoginId());
     }
 
     public void changePassword(User authenticatedUser, PasswordChangeRequest request) {
         User user = loadCurrentUser(authenticatedUser);
-        verifyPassword(request.currentPassword(), user);
-        user.changePassword(passwordEncoder.encode(request.newPassword()));
+        verifyPassword(request.getCurrentPassword(), user);
+        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.flush();
         refreshTokenStore.delete(user.getLoginId());
     }
@@ -80,14 +75,12 @@ public class UserAccountService {
         }
     }
 
-    private void flush(ErrorCode duplicateError) {
+    private void flushLoginIdChange() {
         try {
             userRepository.flush();
         } catch (DataIntegrityViolationException exception) {
-            for (Throwable cause = exception; cause != null; cause = cause.getCause()) {
-                if (cause instanceof SQLException sqlException && sqlException.getErrorCode() == 1062) {
-                    throw new CustomException(duplicateError);
-                }
+            if (MySqlErrors.isDuplicateKey(exception)) {
+                throw new CustomException(ErrorCode.USER_ALREADY_EXISTS);
             }
             throw exception;
         }

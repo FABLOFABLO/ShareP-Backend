@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @RequiredArgsConstructor
 public class LoginService {
@@ -31,11 +30,8 @@ public class LoginService {
             throw new CustomException(ErrorCode.LOGIN_FAILED);
         }
 
-        String accessToken =
-                jwtTokenProvider.generateAccessToken(user);
-
-        String refreshToken =
-                jwtTokenProvider.generateRefreshToken(user);
+        String accessToken = jwtTokenProvider.generateAccessToken(user);
+        String refreshToken = jwtTokenProvider.createAndStoreRefreshToken(user);
 
         return new LoginResponse(accessToken, refreshToken);
     }

@@ -26,9 +26,6 @@ public class User {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "nickname_key", unique = true, length = 20)
-    private String nicknameKey;
-
     @Column(name = "credential_stamp", length = 36)
     private String credentialStamp;
 
@@ -58,7 +55,6 @@ public class User {
 
     public void changeNickname(String nickname) {
         this.nickname = nickname;
-        this.nicknameKey = DEFAULT_NICKNAME.equals(nickname) ? null : nickname;
     }
 
     public void changeLoginId(String loginId) {

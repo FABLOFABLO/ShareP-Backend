@@ -1,4 +1,4 @@
-package com.sharep.global.refresh;
+package com.sharep.global.jwt;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

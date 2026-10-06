@@ -1,19 +1,16 @@
 package com.sharep.global.jwt;
 
 import com.sharep.global.error.SecurityExceptionHandler;
+import com.sharep.global.config.SecurityEndpoints;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
-import org.springframework.security.web.util.matcher.OrRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -23,22 +20,12 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private static final RequestMatcher PUBLIC_ENDPOINTS =
-            new OrRequestMatcher(
-                    PathPatternRequestMatcher.withDefaults()
-                            .matcher(HttpMethod.POST, "/user/signup"),
-                    PathPatternRequestMatcher.withDefaults()
-                            .matcher(HttpMethod.POST, "/user/login"),
-                    PathPatternRequestMatcher.withDefaults()
-                            .matcher(HttpMethod.POST, "/user/reissue")
-            );
-
     private final JwtTokenProvider jwtTokenProvider;
     private final SecurityExceptionHandler securityExceptionHandler;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return PUBLIC_ENDPOINTS.matches(request);
+        return SecurityEndpoints.PUBLIC_ENDPOINTS.matches(request);
     }
 
     @Override
