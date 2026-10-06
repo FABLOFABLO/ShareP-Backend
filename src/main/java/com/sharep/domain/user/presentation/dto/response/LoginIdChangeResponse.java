@@ -1,4 +1,10 @@
 package com.sharep.domain.user.presentation.dto.response;
 
-public record LoginIdChangeResponse(String id) {
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public class LoginIdChangeResponse {
+    private final String id;
 }

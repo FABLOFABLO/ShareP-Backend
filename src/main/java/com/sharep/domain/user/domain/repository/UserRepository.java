@@ -14,10 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByLoginId(String loginId);
 
-    boolean existsByLoginIdAndIdNot(String loginId, Long id);
-
-    boolean existsByNicknameAndIdNot(String nickname, Long id);
-
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select u from User u where u.id = :id")
     Optional<User> findByIdForUpdate(@Param("id") Long id);

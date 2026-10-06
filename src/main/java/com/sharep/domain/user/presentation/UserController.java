@@ -15,11 +15,11 @@ import com.sharep.domain.user.service.LogoutService;
 import com.sharep.domain.user.service.TokenReissueService;
 import com.sharep.domain.user.service.UserSignupService;
 import com.sharep.global.auth.AuthDetails;
-import com.sharep.global.jwt.JwtTokenProvider;
-import jakarta.servlet.http.HttpServletRequest;
+import com.sharep.global.jwt.AccessTokenDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +32,11 @@ public class UserController {
     private final LoginService loginService;
     private final LogoutService logoutService;
     private final TokenReissueService tokenReissueService;
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserAccountService userAccountService;
 
     @PatchMapping("/nickname")
     public NicknameChangeResponse changeNickname(@AuthenticationPrincipal AuthDetails currentUser,
-                                                  @Valid @RequestBody NicknameChangeRequest request) {
+                                                 @Valid @RequestBody NicknameChangeRequest request) {
         return userAccountService.changeNickname(currentUser.getUser(), request);
     }
 
@@ -55,34 +54,27 @@ public class UserController {
     }
 
     @PostMapping("/reissue")
-    public LoginResponse reissue(
-            @Valid @RequestBody TokenReissueRequest request) {
+    public LoginResponse reissue(@Valid @RequestBody TokenReissueRequest request) {
         return tokenReissueService.reissue(request);
     }
 
     @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.OK)
-    public void logout(
-            @AuthenticationPrincipal AuthDetails currentUser,
-            HttpServletRequest request
-    ) {
-        String accessToken = jwtTokenProvider.resolveToken(request);
-
+    public void logout(@AuthenticationPrincipal AuthDetails currentUser,
+                       Authentication authentication) {
         logoutService.logout(
                 currentUser.getUsername(),
-                accessToken
+                (AccessTokenDetails) authentication.getDetails()
         );
     }
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public void signup(@Valid @RequestBody UserSignupRequest request){
+    public void signup(@Valid @RequestBody UserSignupRequest request) {
         userSignupService.signUp(request);
     }
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.OK)
-    public LoginResponse login(@Valid @RequestBody LoginRequest request){
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return loginService.login(request);
     }
 
