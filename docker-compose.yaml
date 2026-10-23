@@ -10,6 +10,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       SPRING_DATA_REDIS_HOST: ${REDIS_HOST}
       SPRING_DATA_REDIS_PORT: ${REDIS_PORT}
+      SPRING_DATA_JWT_SECRET_TOKEN: ${JWT_SECRET_KEY}
     depends_on:
       mysql:
         condition: service_healthy
