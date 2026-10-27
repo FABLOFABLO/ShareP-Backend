@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/follow", "/follow/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/user/logout").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/user/nickname", "/user/id", "/user/password").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/user/mypage", "/user/{user-id}").authenticated()
                         .anyRequest().denyAll()
                 )
                 .addFilterBefore(

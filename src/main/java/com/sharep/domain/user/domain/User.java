@@ -5,9 +5,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import java.util.UUID;
 
 @Entity
+@DynamicUpdate
 @Getter
 @Table(name = "tbl_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -45,7 +47,6 @@ public class User {
         this.loginId = loginId;
         this.password = password;
         this.nickname = DEFAULT_NICKNAME;
-        this.nickname = "프롬프트 마스터";
         this.promptCount = 0L;
         this.followerCount = 0L;
         this.followingCount = 0L;
