@@ -1,5 +1,6 @@
 package com.sharep.domain.prompt.service;
 
+import com.sharep.domain.follow.domain.repository.FollowRepository;
 import com.sharep.domain.prompt.domain.Prompt;
 import com.sharep.domain.prompt.domain.repository.PromptLikeRepository;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
@@ -18,6 +19,7 @@ public class PromptReadDetailService {
     private final PromptRepository promptRepository;
     private final PromptLikeRepository promptLikeRepository;
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
 
     @Transactional(readOnly = true)
     public PromptDetailResponse execute(Long id, Long userId) {
@@ -27,10 +29,20 @@ public class PromptReadDetailService {
         Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
 
         if (promptLikeRepository.findByUserAndPrompt(user, prompt) != null) {
-            return new PromptDetailResponse(prompt, true);
+            if (followRepository.findByFollowerAndFollowing(user, prompt.getAuthor()) == null) {
+                return new PromptDetailResponse(prompt, false, true);
+            }
+            else {
+                return new PromptDetailResponse(prompt, true, true);
+            }
         }
         else {
-            return new PromptDetailResponse(prompt, false);
+            if (followRepository.findByFollowerAndFollowing(user, prompt.getAuthor()) == null) {
+                return new PromptDetailResponse(prompt, false, false);
+            }
+            else {
+                return new PromptDetailResponse(prompt, true, false);
+            }
         }
     }
 }

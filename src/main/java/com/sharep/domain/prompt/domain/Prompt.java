@@ -1,5 +1,6 @@
 package com.sharep.domain.prompt.domain;
 
+import com.sharep.domain.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -26,8 +27,9 @@ public class Prompt {
     @Column(name = "tag", nullable = false, length = 30)
     private String tag;
 
-    @Column(name = "user_id", nullable = false)
-    private Long author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User author;
 
     @Column(name = "like_count", nullable = false)
     private Long likeCount;
@@ -36,7 +38,7 @@ public class Prompt {
     private LocalDateTime createAt;
 
     @Builder
-    private Prompt(String title, String description, String prompt, String tag, Long author, LocalDateTime createAt) {
+    private Prompt(String title, String description, String prompt, String tag, User author, LocalDateTime createAt) {
         this.title = title;
         this.description = description;
         this.prompt = prompt;

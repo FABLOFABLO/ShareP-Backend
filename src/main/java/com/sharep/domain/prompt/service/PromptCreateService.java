@@ -21,7 +21,7 @@ public class PromptCreateService {
                 .description(promptRequest.getDescription() != null ? promptRequest.getDescription() : "")
                 .prompt(promptRequest.getPrompt())
                 .tag(promptRequest.getTag())
-                .author(currentUser.getId())
+                .author(currentUser)
                 .createAt(LocalDateTime.now())
                 .build();
 
