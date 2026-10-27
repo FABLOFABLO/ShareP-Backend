@@ -44,7 +44,7 @@ public class UserPageReadService {
         return new MyPageResponse(
                 user.getId(),
                 user.getNickname(),
-                followRepository.countByFollowee_Id(user.getId()),
+                followRepository.countByFollowing_Id(user.getId()),
                 followRepository.countByFollower_Id(user.getId()),
                 prompts,
                 likedPrompts
@@ -66,13 +66,13 @@ public class UserPageReadService {
                 .toList();
 
         boolean isFollowing = !currentUserId.equals(targetUserId)
-                && followRepository.existsByFollower_IdAndFollowee_Id(
+                && followRepository.existsByFollower_IdAndFollowing_Id(
                         currentUserId, targetUserId);
 
         return new UserProfileResponse(
                 targetUser.getId(),
                 targetUser.getNickname(),
-                followRepository.countByFollowee_Id(targetUserId),
+                followRepository.countByFollowing_Id(targetUserId),
                 followRepository.countByFollower_Id(targetUserId),
                 isFollowing,
                 prompts
