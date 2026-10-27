@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 import java.util.UUID;
 
 @Entity
@@ -30,7 +29,6 @@ public class User {
     private String credentialStamp;
 
     @Column(name = "password", nullable = false, length = 255)
-    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "prompt_count", nullable = false)
