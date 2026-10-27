@@ -14,7 +14,7 @@ public class LoginIdChangeRequest {
     @Size(max = 50, message = "비밀번호는 50자 이하로 입력해주세요.")
     private String password;
 
-    @JsonProperty("new-id")
+    @JsonProperty("new_id")
     @NotBlank(message = "새 아이디는 필수입니다.")
     @ValidLoginId
     private String newId;
