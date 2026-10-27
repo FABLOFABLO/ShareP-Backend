@@ -1,5 +1,6 @@
 package com.sharep.domain.prompt.presentation.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sharep.domain.prompt.domain.Prompt;
 import lombok.Getter;
 import java.time.LocalDateTime;
@@ -11,7 +12,9 @@ public class PromptAllResponse {
     private final String description;
     private final String tag;
     private final Long author;
+    @JsonProperty("like_count")
     private final Long likeCount;
+    @JsonProperty("create_at")
     private final LocalDateTime createAt;
     private final Boolean liked;
 
