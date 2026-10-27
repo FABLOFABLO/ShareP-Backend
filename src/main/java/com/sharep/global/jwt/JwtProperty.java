@@ -18,7 +18,6 @@ public class JwtProperty {
     @NotBlank
     private final String secretKey;
 
-    // Expiration settings are milliseconds; Redis TTL is converted to seconds.
     @NotNull
     @Positive
     private final Long accessExp;

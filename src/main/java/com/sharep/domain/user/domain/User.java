@@ -5,12 +5,17 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
+import java.util.UUID;
 
 @Entity
+@DynamicUpdate
 @Getter
 @Table(name = "tbl_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
+    public static final String DEFAULT_NICKNAME = "프롬프트 마스터";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
@@ -22,7 +27,10 @@ public class User {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "credential_stamp", length = 36)
+    private String credentialStamp;
+
+    @Column(name = "password", nullable = false, length = 255)
     private String password;
 
     @Column(name = "prompt_count", nullable = false)
@@ -38,10 +46,24 @@ public class User {
     private User(String loginId, String password) {
         this.loginId = loginId;
         this.password = password;
-        this.nickname = "프롬프트 마스터";
+        this.nickname = DEFAULT_NICKNAME;
         this.promptCount = 0L;
         this.followerCount = 0L;
         this.followingCount = 0L;
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void changeLoginId(String loginId) {
+        this.loginId = loginId;
+        this.credentialStamp = UUID.randomUUID().toString();
+    }
+
+    public void changePassword(String password) {
+        this.password = password;
+        this.credentialStamp = UUID.randomUUID().toString();
     }
 
     public void PromptAdd() {

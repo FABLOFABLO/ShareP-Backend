@@ -1,8 +1,8 @@
 package com.sharep.global.jwt;
 
 import com.sharep.global.auth.AuthDetailsService;
-import com.sharep.global.refresh.RefreshToken;
-import com.sharep.global.refresh.RefreshTokenRepository;
+import com.sharep.global.auth.AuthDetails;
+import com.sharep.domain.user.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -15,13 +15,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -29,7 +30,8 @@ public class JwtTokenProvider {
 
     private final JwtProperty jwtProperty;
     private final AuthDetailsService authDetailsService;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenStore refreshTokenStore;
+    private final AccessTokenBlacklist accessTokenBlacklist;
 
     private SecretKey key;
 
@@ -38,27 +40,37 @@ public class JwtTokenProvider {
         key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperty.getSecretKey()));
     }
 
-    public String generateAccessToken(String loginId) {
-        return generateToken(loginId, "access", jwtProperty.getAccessExp());
+    public String generateAccessToken(User user) {
+        return generateToken(user, "access", jwtProperty.getAccessExp());
     }
 
-    public String generateRefreshToken(String loginId) {
-        String token = generateToken(loginId, "refresh", jwtProperty.getRefreshExp());
-        refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .accountId(loginId)
-                        .token(token)
-                        .ttl(TimeUnit.MILLISECONDS.toSeconds(jwtProperty.getRefreshExp()))
-                        .build()
+    public String createRefreshToken(User user) {
+        return generateToken(
+                user,
+                "refresh",
+                jwtProperty.getRefreshExp()
         );
+    }
+
+    public String createAndStoreRefreshToken(User user) {
+        String token = createRefreshToken(user);
+        refreshTokenStore.save(
+                user.getLoginId(),
+                token,
+                jwtProperty.getRefreshExp()
+        );
+
         return token;
     }
 
-    private String generateToken(String subject, String type, long expirationMillis) {
+    private String generateToken(User user, String type, long expirationMillis) {
         Instant now = Instant.now();
         return Jwts.builder()
                 .header().add("type", type).and()
-                .subject(subject)
+                .subject(user.getLoginId())
+                .claim("uid", user.getId().toString())
+                .claim("credentials", Objects.toString(user.getCredentialStamp(), ""))
+                .id(UUID.randomUUID().toString())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusMillis(expirationMillis)))
                 .signWith(key, Jwts.SIG.HS256)
@@ -84,18 +96,25 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        Claims claims = parseAccessClaims(token);
-        UserDetails user = authDetailsService.loadUserByUsername(claims.getSubject());
+        Claims claims = parseClaims(token, "access");
 
-        if (!user.isEnabled() || !user.isAccountNonLocked()
-                || !user.isAccountNonExpired() || !user.isCredentialsNonExpired()) {
-            throw new BadCredentialsException("Account unavailable");
+        if (accessTokenBlacklist.isBlocked(claims.getId())) {
+            throw new BadCredentialsException("Logged out access token");
         }
 
-        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        AuthDetails user = validateCurrentUser(claims);
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        authentication.setDetails(new AccessTokenDetails(claims.getId(), claims.getExpiration().getTime()));
+        return authentication;
     }
 
-    private Claims parseAccessClaims(String token) {
+    public User getUserFromRefreshToken(String token) {
+        return validateCurrentUser(parseClaims(token, "refresh")).getUser();
+    }
+
+    private Claims parseClaims(String token, String type) {
         try {
             Jws<Claims> jwt = Jwts.parser()
                     .verifyWith(key)
@@ -103,14 +122,30 @@ public class JwtTokenProvider {
                     .parseSignedClaims(token);
             Claims claims = jwt.getPayload();
 
-            if (!"access".equals(jwt.getHeader().get("type"))
+            if (!type.equals(jwt.getHeader().get("type"))
                     || claims.getSubject() == null || claims.getSubject().isBlank()
-                    || claims.getExpiration() == null) {
-                throw new BadCredentialsException("Invalid access token");
+                    || claims.getExpiration() == null
+                    || ("access".equals(type) && (claims.getId() == null || claims.getId().isBlank()))) {
+                throw new BadCredentialsException("Invalid " + type + " token");
             }
             return claims;
         } catch (JwtException | IllegalArgumentException e) {
-            throw new BadCredentialsException("Invalid or expired JWT token", e);
+            throw new BadCredentialsException("Invalid or expired " + type + " token", e);
         }
+    }
+
+    private AuthDetails validateCurrentUser(Claims claims) {
+        AuthDetails user;
+        try {
+            user = authDetailsService.loadUserByUsername(claims.getSubject());
+        } catch (UsernameNotFoundException exception) {
+            throw new BadCredentialsException("Account unavailable", exception);
+        }
+        if (!user.getUser().getId().toString().equals(claims.get("uid", String.class))
+                || !Objects.toString(user.getUser().getCredentialStamp(), "")
+                .equals(claims.get("credentials", String.class))) {
+            throw new BadCredentialsException("Credentials changed");
+        }
+        return user;
     }
 }
