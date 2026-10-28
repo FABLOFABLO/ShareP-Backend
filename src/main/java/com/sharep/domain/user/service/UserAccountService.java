@@ -61,7 +61,7 @@ public class UserAccountService {
     }
 
     private User loadCurrentUser(User authenticatedUser) {
-        User user = userRepository.findByIdForUpdate(authenticatedUser.getId())
+        User user = userRepository.findById(authenticatedUser.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED));
         if (!Objects.equals(user.getCredentialStamp(), authenticatedUser.getCredentialStamp())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);

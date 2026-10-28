@@ -2,6 +2,8 @@ package com.sharep.domain.user.presentation.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sharep.domain.prompt.domain.Prompt;
+import com.sharep.domain.prompt.domain.PromptLike;
+import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -10,31 +12,12 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class MyPageResponse {
-    @JsonProperty("user-id")
+    @JsonProperty("user_id")
     private final Long userId;
     private final String nickname;
-    private final long follower;
-    private final long following;
-    private final List<PromptItem> prompts;
-    @JsonProperty("liked-id")
-    private final List<PromptItem> likedPrompts;
-
-    @Getter
-    public static class PromptItem {
-        @JsonProperty("prompt-id")
-        private final Long promptId;
-        private final String title;
-        private final String description;
-        private final List<String> tag;
-        @JsonProperty("like")
-        private final Long likeCount;
-
-        public PromptItem(Prompt prompt) {
-            this.promptId = prompt.getId();
-            this.title = prompt.getTitle();
-            this.description = prompt.getDescription();
-            this.tag = List.of(prompt.getTag());
-            this.likeCount = prompt.getLikeCount();
-        }
-    }
+    private final Long follower;
+    private final Long following;
+    private final List<PromptAllResponse> prompts;
+    @JsonProperty("liked_id")
+    private final List<PromptAllResponse> likedPrompts;
 }

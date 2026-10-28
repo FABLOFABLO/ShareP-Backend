@@ -39,7 +39,6 @@ public class PromptReadAllService {
 
         promptResponse = prompts.stream()
                 .map(prompt -> {
-                    Boolean liked;
                     if (promptLikeRepository.findByUserAndPrompt(user, prompt) != null) {
                         return new PromptAllResponse(prompt, true);
                     }

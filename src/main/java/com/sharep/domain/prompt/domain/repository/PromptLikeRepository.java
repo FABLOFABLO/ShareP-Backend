@@ -12,12 +12,5 @@ import java.util.List;
 public interface PromptLikeRepository extends JpaRepository<PromptLike, Long> {
     PromptLike findByUserAndPrompt(User user, Prompt prompt);
     List<PromptLike> findAllByUser(User user);
-    @Query("""
-            select p
-            from PromptLike pl
-            join pl.prompt p
-            where pl.user.id = :userId
-            order by p.createAt desc, p.id desc
-            """)
-    List<Prompt> findLikedPromptsByUserId(@Param("userId") Long userId);
+    List<PromptLike> findLikedPromptsByUserId(Long userId);
 }

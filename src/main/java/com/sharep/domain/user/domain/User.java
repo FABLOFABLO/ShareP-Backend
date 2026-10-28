@@ -9,7 +9,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.util.UUID;
 
 @Entity
-@DynamicUpdate
 @Getter
 @Table(name = "tbl_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

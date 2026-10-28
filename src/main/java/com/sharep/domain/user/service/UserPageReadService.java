@@ -1,8 +1,11 @@
 package com.sharep.domain.user.service;
 
 import com.sharep.domain.follow.domain.repository.FollowRepository;
+import com.sharep.domain.prompt.domain.Prompt;
+import com.sharep.domain.prompt.domain.PromptLike;
 import com.sharep.domain.prompt.domain.repository.PromptLikeRepository;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
+import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
 import com.sharep.domain.user.domain.User;
 import com.sharep.domain.user.domain.repository.UserRepository;
 import com.sharep.domain.user.presentation.dto.response.MyPageResponse;
@@ -29,16 +32,32 @@ public class UserPageReadService {
         User user = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED));
 
-        List<MyPageResponse.PromptItem> prompts = promptRepository
-                .findByAuthorOrderByCreateAtDescIdDesc(user.getId())
-                .stream()
-                .map(MyPageResponse.PromptItem::new)
+        List<Prompt> prompts = promptRepository
+                .findByAuthorOrderByCreateAtDesc(user);
+
+        List<PromptAllResponse> promptResponse = prompts.stream()
+                .map(prompt -> {
+                    if (promptLikeRepository.findByUserAndPrompt(user, prompt) != null) {
+                        return new PromptAllResponse(prompt, true);
+                    }
+                    else {
+                        return new PromptAllResponse(prompt, false);
+                    }
+                })
                 .toList();
 
-        List<MyPageResponse.PromptItem> likedPrompts = promptLikeRepository
-                .findLikedPromptsByUserId(user.getId())
-                .stream()
-                .map(MyPageResponse.PromptItem::new)
+        List<PromptLike> likedPrompts = promptLikeRepository
+                .findLikedPromptsByUserId(user.getId());
+
+        List<PromptAllResponse> promptLikeResponse = likedPrompts.stream()
+                .map(likedPrompt -> {
+                    if (promptLikeRepository.findByUserAndPrompt(user, likedPrompt.getPrompt()) != null) {
+                        return new PromptAllResponse(likedPrompt.getPrompt(), true);
+                    }
+                    else {
+                        return new PromptAllResponse(likedPrompt.getPrompt(), false);
+                    }
+                })
                 .toList();
 
         return new MyPageResponse(
@@ -46,8 +65,8 @@ public class UserPageReadService {
                 user.getNickname(),
                 followRepository.countByFollowing_Id(user.getId()),
                 followRepository.countByFollower_Id(user.getId()),
-                prompts,
-                likedPrompts
+                promptResponse,
+                promptLikeResponse
         );
     }
 
@@ -59,10 +78,18 @@ public class UserPageReadService {
         User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        List<UserProfileResponse.PromptItem> prompts = promptRepository
-                .findByAuthorOrderByCreateAtDescIdDesc(targetUserId)
-                .stream()
-                .map(UserProfileResponse.PromptItem::new)
+        List<Prompt> prompts = promptRepository
+                .findByAuthorOrderByCreateAtDesc(targetUser);
+
+        List<PromptAllResponse> promptResponse = prompts.stream()
+                .map(prompt -> {
+                    if (promptLikeRepository.findByUserAndPrompt(targetUser, prompt) != null) {
+                        return new PromptAllResponse(prompt, true);
+                    }
+                    else {
+                        return new PromptAllResponse(prompt, false);
+                    }
+                })
                 .toList();
 
         boolean isFollowing = !currentUserId.equals(targetUserId)
@@ -75,7 +102,7 @@ public class UserPageReadService {
                 followRepository.countByFollowing_Id(targetUserId),
                 followRepository.countByFollower_Id(targetUserId),
                 isFollowing,
-                prompts
+                promptResponse
         );
     }
 }

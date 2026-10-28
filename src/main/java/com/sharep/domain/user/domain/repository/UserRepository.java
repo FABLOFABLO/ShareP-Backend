@@ -12,9 +12,6 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByLoginId(String loginId);
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select u from User u where u.id = :id")
-    Optional<User> findByIdForUpdate(@Param("id") Long id);
 
     boolean existsByLoginId(String loginId);
     List<User> findAllByOrderByFollowerCountDesc();
