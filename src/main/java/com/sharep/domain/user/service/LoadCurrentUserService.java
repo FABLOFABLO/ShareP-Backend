@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class LoadCurrentUserService {
@@ -17,7 +19,7 @@ public class LoadCurrentUserService {
     public User execute(User authenticatedUser) {
         User user = userRepository.findById(authenticatedUser.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED));
-        if (!user.getCredentialStamp().equals(authenticatedUser.getCredentialStamp())) {
+        if (!Objects.equals(user.getCredentialStamp(), authenticatedUser.getCredentialStamp())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
         return user;
