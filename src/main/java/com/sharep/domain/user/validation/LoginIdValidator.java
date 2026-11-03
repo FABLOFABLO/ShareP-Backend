@@ -25,6 +25,6 @@ public class LoginIdValidator implements ConstraintValidator<ValidLoginId, Strin
                 return false;
             }
         }
-        return letters >= 5 && letters <= 20 && digits <= 10;
+        return letters + digits >= 5 && letters + digits <= 30;
     }
 }

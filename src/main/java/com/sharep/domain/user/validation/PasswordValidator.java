@@ -16,17 +16,14 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
         }
 
         int letters = 0;
-        int specials = 0;
         for (int i = 0; i < password.length(); i++) {
             char c = password.charAt(i);
-            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+            if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || (SPECIALS.indexOf(c) >= 0)) {
                 letters++;
-            } else if (SPECIALS.indexOf(c) >= 0) {
-                specials++;
             } else {
                 return false;
             }
         }
-        return letters >= 8 && letters <= 30 && specials >= 1 && specials <= 20;
+        return letters >= 8 && letters <= 20;
     }
 }

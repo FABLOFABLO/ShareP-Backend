@@ -20,7 +20,9 @@ public enum ErrorCode {
     ALREADY_UNLIKED(409, "이미 해당 게시글에 좋아요가 안눌러져 있습니다."),
     ALREADY_FOLLOWED(409, "이미 해당 유저를 팔로우하고 있습니다."),
     ALREADY_UNFOLLOWED(409, "이미 해당 유저 팔로우하고 있지 않습니다."),
-    SAME_PERSON(409, "자기 자신을 팔로우 할 수 없습니다.");
+    SAME_PERSON(409, "자기 자신을 팔로우 할 수 없습니다."),
+    ALREADY_NICKNAME(409, "이미 해당 닉네임을 사용 중입니다."),
+    ALREADY_LOGINID(409, "이미 해당 아이디를 사용 중입니다.");
     private final Integer errorCode;
     private final String message;
 }

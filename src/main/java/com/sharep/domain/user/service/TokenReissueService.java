@@ -20,7 +20,7 @@ public class TokenReissueService {
     private final JwtProperty jwtProperty;
     private final RefreshTokenStore refreshTokenStore;
 
-    public LoginResponse reissue(TokenReissueRequest request) {
+    public LoginResponse execute(TokenReissueRequest request) {
         String oldRefreshToken = request.getRefreshToken();
 
         User user = validateRefreshToken(oldRefreshToken);

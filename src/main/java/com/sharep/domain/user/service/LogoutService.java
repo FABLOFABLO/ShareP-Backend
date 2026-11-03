@@ -13,7 +13,7 @@ public class LogoutService {
     private final RefreshTokenStore refreshTokenStore;
     private final AccessTokenBlacklist accessTokenBlacklist;
 
-    public void logout(String loginId, AccessTokenDetails token) {
+    public void execute(String loginId, AccessTokenDetails token) {
         long remainingMillis = token.getExpiresAtMillis() - System.currentTimeMillis();
         refreshTokenStore.delete(loginId);
 

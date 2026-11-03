@@ -1,8 +1,6 @@
 package com.sharep.domain.user.presentation.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sharep.domain.prompt.domain.Prompt;
-import com.sharep.domain.prompt.domain.PromptLike;
 import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,6 @@ public class MyPageResponse {
     private final Long follower;
     private final Long following;
     private final List<PromptAllResponse> prompts;
-    @JsonProperty("liked_id")
+    @JsonProperty("liked_prompt")
     private final List<PromptAllResponse> likedPrompts;
 }

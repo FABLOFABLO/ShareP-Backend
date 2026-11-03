@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = LoginIdValidator.class)
 public @interface ValidLoginId {
-    String message() default "아이디는 영문 5~20자, 숫자 0~10자까지만 허용되며, 특수문자는 사용할 수 없습니다.";
+    String message() default "영숫자 5~30자";
 
     Class<?>[] groups() default {};
 

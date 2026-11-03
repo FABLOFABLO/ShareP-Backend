@@ -21,7 +21,7 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public LoginResponse login(LoginRequest request) {
+    public LoginResponse execute(LoginRequest request) {
 
         User user = userRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new CustomException(ErrorCode.LOGIN_FAILED));
