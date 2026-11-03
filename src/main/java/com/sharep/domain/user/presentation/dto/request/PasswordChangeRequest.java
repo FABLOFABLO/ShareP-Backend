@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class PasswordChangeRequest {
     @JsonProperty("current_password")
     @NotBlank(message = "현재 비밀번호는 필수입니다.")
-    @Size(max = 50, message = "비밀번호는 50자 이하로 입력해주세요.")
+    @Size(max = 30, message = "비밀번호는 30자 이하로 입력해주세요.")
     private String currentPassword;
 
     @JsonProperty("new_password")

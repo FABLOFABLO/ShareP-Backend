@@ -17,7 +17,7 @@ public class LoadCurrentUserService {
     public User execute(User authenticatedUser) {
         User user = userRepository.findById(authenticatedUser.getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED));
-        if (user.getCredentialStamp().equals(authenticatedUser.getCredentialStamp())) {
+        if (!user.getCredentialStamp().equals(authenticatedUser.getCredentialStamp())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
         return user;
