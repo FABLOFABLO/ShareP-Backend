@@ -15,6 +15,8 @@ public class UserProfileResponse {
     private final String nickname;
     private final Long follower;
     private final Long following;
+    @JsonProperty("prompt_count")
+    private final Long promptCount;
     @JsonProperty("followed")
     private final Boolean followed;
     private final List<PromptAllResponse> prompts;

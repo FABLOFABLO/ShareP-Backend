@@ -54,8 +54,9 @@ public class UserProfileReadService {
         return new UserProfileResponse(
                 targetUser.getId(),
                 targetUser.getNickname(),
-                followRepository.countByFollowing_Id(targetUserId),
-                followRepository.countByFollower_Id(targetUserId),
+                targetUser.getFollowingCount(),
+                targetUser.getFollowerCount(),
+                targetUser.getPromptCount(),
                 isFollowing,
                 promptResponse
         );
