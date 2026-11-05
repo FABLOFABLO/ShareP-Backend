@@ -15,6 +15,8 @@ public class MyPageResponse {
     private final String nickname;
     private final Long follower;
     private final Long following;
+    @JsonProperty("prompt_count")
+    private final Long promptCount;
     private final List<PromptAllResponse> prompts;
     @JsonProperty("liked_prompt")
     private final List<PromptAllResponse> likedPrompts;

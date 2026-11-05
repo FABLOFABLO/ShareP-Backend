@@ -62,8 +62,9 @@ public class MyPageService {
         return new MyPageResponse(
                 user.getId(),
                 user.getNickname(),
-                followRepository.countByFollowing_Id(user.getId()),
-                followRepository.countByFollower_Id(user.getId()),
+                user.getFollowingCount(),
+                user.getFollowerCount(),
+                user.getPromptCount(),
                 promptResponse,
                 promptLikeResponse
         );
