@@ -1,6 +1,7 @@
 package com.sharep.domain.prompt.service;
 
 import com.sharep.domain.prompt.domain.Prompt;
+import com.sharep.domain.prompt.domain.repository.PromptLikeRepository;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
 import com.sharep.domain.user.domain.User;
 import com.sharep.global.error.exception.CustomException;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PromptDeleteService {
     private final PromptRepository promptRepository;
+    private final PromptLikeRepository promptLikeRepository;
 
     @Transactional
     public void execute(Long id, User currentUser) {
@@ -21,6 +23,7 @@ public class PromptDeleteService {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 
+        promptLikeRepository.deleteAllByPrompt(prompt);
         promptRepository.delete(prompt);
 
         currentUser.PromptDelete();

@@ -13,4 +13,5 @@ public interface PromptLikeRepository extends JpaRepository<PromptLike, Long> {
     PromptLike findByUserAndPrompt(User user, Prompt prompt);
     List<PromptLike> findAllByUser(User user);
     List<PromptLike> findLikedPromptsByUserId(Long userId);
+    void deleteAllByPrompt(Prompt prompt);
 }
