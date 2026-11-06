@@ -8,10 +8,12 @@ import com.sharep.global.error.exception.CustomException;
 import com.sharep.global.error.exception.ErrorCode;
 import com.sharep.global.jwt.RefreshTokenStore;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LoginIdChangeService {
@@ -22,6 +24,7 @@ public class LoginIdChangeService {
 
     @Transactional
     public void execute(User authenticatedUser, LoginIdChangeRequest request) {
+        log.info("로그인 아이디 변경 시도");
         User user = loadCurrentUserService.execute(authenticatedUser);
         verifyPasswordService.execute(request.getPassword(), user);
         if (user.getLoginId().equals(request.getNewId())) {

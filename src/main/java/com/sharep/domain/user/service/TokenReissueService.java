@@ -23,6 +23,7 @@ public class TokenReissueService {
     private final RefreshTokenStore refreshTokenStore;
 
     public LoginResponse execute(TokenReissueRequest request) {
+        log.info("리프레시 토큰 발급 시도");
         String oldRefreshToken = request.getRefreshToken();
 
         User user = validateRefreshToken(oldRefreshToken);
@@ -37,12 +38,9 @@ public class TokenReissueService {
                 newRefreshToken,
                 jwtProperty.getRefreshExp()
         );
-        log.info("리프레시 토큰 발급 시도");
         if (!rotated) {
-            log.info("리프레시 토큰 발급 실패");
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
-        log.info("리프레시 토큰 발급 완료");
 
         return new LoginResponse(newAccessToken, newRefreshToken);
     }
