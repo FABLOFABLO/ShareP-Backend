@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @PostMapping("/reissue")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     public LoginResponse reissue(@Valid @RequestBody TokenReissueRequest request) {
         return tokenReissueService.execute(request);
     }
