@@ -9,9 +9,11 @@ import com.sharep.global.jwt.JwtProperty;
 import com.sharep.global.jwt.JwtTokenProvider;
 import com.sharep.global.jwt.RefreshTokenStore;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenReissueService {
@@ -35,10 +37,12 @@ public class TokenReissueService {
                 newRefreshToken,
                 jwtProperty.getRefreshExp()
         );
-
+        log.info("리프레시 토큰 발급 시도");
         if (!rotated) {
+            log.info("리프레시 토큰 발급 실패");
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
+        log.info("리프레시 토큰 발급 완료");
 
         return new LoginResponse(newAccessToken, newRefreshToken);
     }
