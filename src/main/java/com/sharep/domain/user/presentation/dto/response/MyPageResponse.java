@@ -18,6 +18,6 @@ public class MyPageResponse {
     @JsonProperty("prompt_count")
     private final Long promptCount;
     private final List<PromptAllResponse> prompts;
-    @JsonProperty("liked_prompt")
+    @JsonProperty("liked_prompts")
     private final List<PromptAllResponse> likedPrompts;
 }
