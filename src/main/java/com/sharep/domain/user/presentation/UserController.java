@@ -40,16 +40,16 @@ public class UserController {
 
     @PatchMapping("/id")
     @ResponseStatus(HttpStatus.CREATED)
-    public void changeLoginId(@AuthenticationPrincipal AuthDetails currentUser,
+    public LoginResponse changeLoginId(@AuthenticationPrincipal AuthDetails currentUser,
                                                @Valid @RequestBody LoginIdChangeRequest request) {
-        loginIdChangeService.execute(currentUser.getUser(), request);
+        return loginIdChangeService.execute(currentUser.getUser(), request);
     }
 
     @PatchMapping("/password")
     @ResponseStatus(HttpStatus.CREATED)
-    public void changePassword(@AuthenticationPrincipal AuthDetails currentUser,
+    public LoginResponse changePassword(@AuthenticationPrincipal AuthDetails currentUser,
                                @Valid @RequestBody PasswordChangeRequest request) {
-        passwordChangeService.execute(currentUser.getUser(), request);
+        return passwordChangeService.execute(currentUser.getUser(), request);
     }
 
     @PostMapping("/reissue")
