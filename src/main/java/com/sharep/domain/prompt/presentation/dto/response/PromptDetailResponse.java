@@ -16,6 +16,7 @@ public class PromptDetailResponse {
     @JsonProperty("author_id")
     private final Long authorId;
     private final String author;
+    private final Boolean isAuthor;
     private final Boolean followed;
     @JsonProperty("like_count")
     private final Long likeCount;
@@ -23,7 +24,7 @@ public class PromptDetailResponse {
     private final LocalDateTime createAt;
     private final Boolean liked;
 
-    public PromptDetailResponse(Prompt prompt, Boolean followed, Boolean liked) {
+    public PromptDetailResponse(Prompt prompt, Boolean isAuthor, Boolean followed, Boolean liked) {
         this.promptId = prompt.getId();
         this.title = prompt.getTitle();
         this.description = prompt.getDescription();
@@ -31,6 +32,7 @@ public class PromptDetailResponse {
         this.tag = prompt.getTag();
         this.authorId = prompt.getAuthor().getId();
         this.author = prompt.getAuthor().getNickname();
+        this.isAuthor = isAuthor;
         this.followed = followed;
         this.likeCount = prompt.getLikeCount();
         this.createAt = prompt.getCreateAt();
