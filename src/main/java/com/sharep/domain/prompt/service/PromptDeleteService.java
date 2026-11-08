@@ -4,6 +4,7 @@ import com.sharep.domain.prompt.domain.Prompt;
 import com.sharep.domain.prompt.domain.repository.PromptLikeRepository;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
 import com.sharep.domain.user.domain.User;
+import com.sharep.domain.user.domain.repository.UserRepository;
 import com.sharep.global.error.exception.CustomException;
 import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class PromptDeleteService {
     private final PromptRepository promptRepository;
     private final PromptLikeRepository promptLikeRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public void execute(Long id, User currentUser) {
+    public void execute(Long id, Long currentUserId) {
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
         Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
-        if (currentUser == null || !prompt.getAuthor().getId().equals(currentUser.getId())) {
+        if (!prompt.getAuthor().getId().equals(currentUserId)) {
             throw new CustomException(ErrorCode.FORBIDDEN);
         }
 

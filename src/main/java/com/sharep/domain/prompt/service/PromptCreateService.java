@@ -4,6 +4,9 @@ import com.sharep.domain.prompt.domain.Prompt;
 import com.sharep.domain.prompt.domain.repository.PromptRepository;
 import com.sharep.domain.prompt.presentation.dto.request.PromptRequest;
 import com.sharep.domain.user.domain.User;
+import com.sharep.domain.user.domain.repository.UserRepository;
+import com.sharep.global.error.exception.CustomException;
+import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +16,12 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class PromptCreateService {
     private final PromptRepository promptRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public void execute(PromptRequest promptRequest, User currentUser) {
+    public void execute(PromptRequest promptRequest, Long currentUserId) {
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
         Prompt prompt = Prompt.builder()
                 .title(promptRequest.getTitle())
                 .description(promptRequest.getDescription() != null ? promptRequest.getDescription() : "")

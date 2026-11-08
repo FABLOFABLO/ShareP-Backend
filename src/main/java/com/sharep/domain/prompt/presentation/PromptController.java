@@ -29,7 +29,7 @@ public class PromptController {
     @ResponseStatus(HttpStatus.CREATED)
     public void promptCreate(@Valid @RequestBody PromptRequest promptRequest,
                              @AuthenticationPrincipal AuthDetails currentUser) {
-        promptCreateService.execute(promptRequest, currentUser.getUser());
+        promptCreateService.execute(promptRequest, currentUser.getUser().getId());
     }
 
     @GetMapping
@@ -50,7 +50,7 @@ public class PromptController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void promptDelete(@PathVariable Long id,
                              @AuthenticationPrincipal AuthDetails currentUser) {
-        promptDeleteService.execute(id, currentUser.getUser());
+        promptDeleteService.execute(id, currentUser.getUser().getId());
     }
 
     @GetMapping("/search")
