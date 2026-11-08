@@ -16,6 +16,7 @@ public class PromptDetailResponse {
     @JsonProperty("author_id")
     private final Long authorId;
     private final String author;
+    @JsonProperty("is_author")
     private final Boolean isAuthor;
     private final Boolean followed;
     @JsonProperty("like_count")
