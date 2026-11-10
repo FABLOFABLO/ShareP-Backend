@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sharep.domain.prompt.presentation.dto.response.PromptAllResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 
 @Getter

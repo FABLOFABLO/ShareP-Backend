@@ -1,6 +1,5 @@
 package com.sharep.domain.user.service;
 
-import com.sharep.domain.follow.domain.repository.FollowRepository;
 import com.sharep.domain.prompt.domain.Prompt;
 import com.sharep.domain.prompt.domain.PromptLike;
 import com.sharep.domain.prompt.domain.repository.PromptLikeRepository;
@@ -14,7 +13,6 @@ import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -23,7 +21,6 @@ public class MyPageService {
 
     private final UserRepository userRepository;
     private final PromptRepository promptRepository;
-    private final FollowRepository followRepository;
     private final PromptLikeRepository promptLikeRepository;
 
     @Transactional(readOnly = true)

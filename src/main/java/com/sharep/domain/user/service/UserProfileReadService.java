@@ -13,7 +13,6 @@ import com.sharep.global.error.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -44,17 +43,13 @@ public class UserProfileReadService {
                 })
                 .toList();
 
-        boolean isFollowing = !currentUserId.equals(targetUserId)
-                && followRepository.existsByFollower_IdAndFollowing_Id(
-                currentUserId, targetUserId);
-
         return new UserProfileResponse(
                 targetUser.getId(),
                 targetUser.getNickname(),
                 targetUser.getFollowingCount(),
                 targetUser.getFollowerCount(),
                 targetUser.getPromptCount(),
-                isFollowing,
+                followRepository.findByFollowerAndFollowing(currentUser, targetUser) != null,
                 promptResponse
         );
     }

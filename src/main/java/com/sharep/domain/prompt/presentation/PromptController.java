@@ -23,7 +23,6 @@ public class PromptController {
     private final PromptSearchService promptSearchService;
     private final PromptLikeService promptLikeService;
     private final PromptUnLikeService promptUnLikeService;
-    private final LikedPromptReadService likedPromptReadService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -75,11 +74,5 @@ public class PromptController {
     public void promptUnLike(@AuthenticationPrincipal AuthDetails currentUser,
                              @PathVariable Long id) {
         promptUnLikeService.execute(currentUser.getUser().getId(), id);
-    }
-
-    @GetMapping("/like")
-    @ResponseStatus(HttpStatus.OK)
-    public List<PromptAllResponse> promptLikedRead(@AuthenticationPrincipal AuthDetails currentUser) {
-        return likedPromptReadService.execute(currentUser.getUser().getId());
     }
 }

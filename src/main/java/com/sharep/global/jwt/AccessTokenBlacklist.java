@@ -3,7 +3,6 @@ package com.sharep.global.jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-
 import java.time.Duration;
 
 @Component
