@@ -36,12 +36,7 @@ public class MyPageService {
 
         List<PromptAllResponse> promptResponse = prompts.stream()
                 .map(prompt -> {
-                    if (promptLikeRepository.findByUserAndPrompt(user, prompt) != null) {
-                        return new PromptAllResponse(prompt, true);
-                    }
-                    else {
-                        return new PromptAllResponse(prompt, false);
-                    }
+                    return new PromptAllResponse(prompt, promptLikeRepository.findByUserAndPrompt(user, prompt) != null);
                 })
                 .toList();
 
@@ -50,12 +45,7 @@ public class MyPageService {
 
         List<PromptAllResponse> promptLikeResponse = likedPrompts.stream()
                 .map(likedPrompt -> {
-                    if (promptLikeRepository.findByUserAndPrompt(user, likedPrompt.getPrompt()) != null) {
-                        return new PromptAllResponse(likedPrompt.getPrompt(), true);
-                    }
-                    else {
-                        return new PromptAllResponse(likedPrompt.getPrompt(), false);
-                    }
+                    return new PromptAllResponse(likedPrompt.getPrompt(), true);
                 })
                 .toList();
 

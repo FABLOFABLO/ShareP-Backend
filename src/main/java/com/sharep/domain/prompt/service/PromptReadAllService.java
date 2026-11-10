@@ -39,12 +39,7 @@ public class PromptReadAllService {
 
         promptResponse = prompts.stream()
                 .map(prompt -> {
-                    if (promptLikeRepository.findByUserAndPrompt(user, prompt) != null) {
-                        return new PromptAllResponse(prompt, true);
-                    }
-                    else {
-                        return new PromptAllResponse(prompt, false);
-                    }
+                    return new PromptAllResponse(prompt, promptLikeRepository.findByUserAndPrompt(user, prompt) != null);
                 })
                 .toList();
 

@@ -28,35 +28,9 @@ public class PromptReadDetailService {
 
         Prompt prompt = promptRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.PROMPT_NOT_FOUND));
 
-        if (prompt.getAuthor().getId().equals(userId)) {
-            if (promptLikeRepository.findByUserAndPrompt(user, prompt) != null) {
-                if (followRepository.findByFollowerAndFollowing(user, prompt.getAuthor()) == null) {
-                    return new PromptDetailResponse(prompt, true, false, true);
-                } else {
-                    return new PromptDetailResponse(prompt, true, true, true);
-                }
-            } else {
-                if (followRepository.findByFollowerAndFollowing(user, prompt.getAuthor()) == null) {
-                    return new PromptDetailResponse(prompt, true, false, false);
-                } else {
-                    return new PromptDetailResponse(prompt, true, true, false);
-                }
-            }
-        }
-        else {
-            if (promptLikeRepository.findByUserAndPrompt(user, prompt) != null) {
-                if (followRepository.findByFollowerAndFollowing(user, prompt.getAuthor()) == null) {
-                    return new PromptDetailResponse(prompt, false, false, true);
-                } else {
-                    return new PromptDetailResponse(prompt, false, true, true);
-                }
-            } else {
-                if (followRepository.findByFollowerAndFollowing(user, prompt.getAuthor()) == null) {
-                    return new PromptDetailResponse(prompt, false, false, false);
-                } else {
-                    return new PromptDetailResponse(prompt, false, true, false);
-                }
-            }
-        }
+        return new PromptDetailResponse(prompt,
+                prompt.getAuthor().getId().equals(userId),
+                followRepository.findByFollowerAndFollowing(user, prompt.getAuthor()) != null,
+                promptLikeRepository.findByUserAndPrompt(user, prompt) != null);
     }
 }

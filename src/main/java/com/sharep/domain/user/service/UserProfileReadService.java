@@ -29,6 +29,8 @@ public class UserProfileReadService {
         if (targetUserId == null || targetUserId <= 0) {
             throw new CustomException(ErrorCode.INVALID_USER_ID);
         }
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USERID_NOT_FOUND));
 
         User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -38,12 +40,7 @@ public class UserProfileReadService {
 
         List<PromptAllResponse> promptResponse = prompts.stream()
                 .map(prompt -> {
-                    if (promptLikeRepository.findByUserAndPrompt(targetUser, prompt) != null) {
-                        return new PromptAllResponse(prompt, true);
-                    }
-                    else {
-                        return new PromptAllResponse(prompt, false);
-                    }
+                    return new PromptAllResponse(prompt, promptLikeRepository.findByUserAndPrompt(currentUser, prompt) != null);
                 })
                 .toList();
 
