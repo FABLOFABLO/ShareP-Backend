@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 public class FollowingResponse {
-    @JsonProperty("following_id")
+    @JsonProperty("follower_id")
     private final Long followerId;
-    @JsonProperty("following_login_id")
+    @JsonProperty("follower_login_id")
     private final String followerLoginId;
-    @JsonProperty("following_nickname")
+    @JsonProperty("follower_nickname")
     private final String followerNickname;
     private final IsFollow following;
 
